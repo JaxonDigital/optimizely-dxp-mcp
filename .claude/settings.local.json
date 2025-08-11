@@ -28,7 +28,15 @@
       "Bash(gh repo create:*)",
       "Bash(git branch:*)",
       "Bash(git remote add origin https://github.com/JaxonDigital/optimizely-dxp-mcp-private.git)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(git fetch:*)",
+      "Bash(GIT_CURL_VERBOSE=1 git push origin main)",
+      "Bash(git fsck:*)",
+      "Bash(git config:*)",
+      "Bash(git remote remove:*)",
+      "Bash(git remote set-url:*)",
+      "Bash(git filter-branch:*)"
     ],
     "deny": []
   }
