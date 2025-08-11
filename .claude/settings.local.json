@@ -24,7 +24,11 @@
       "Bash(grep:*)",
       "Bash(sed:*)",
       "Bash(git init:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(gh repo create:*)",
+      "Bash(git branch:*)",
+      "Bash(git remote add origin https://github.com/JaxonDigital/optimizely-dxp-mcp-private.git)",
+      "Bash(git commit:*)"
     ],
     "deny": []
   }
