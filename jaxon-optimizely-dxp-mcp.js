@@ -43,28 +43,51 @@ class JaxonOptimizelyDxpMcp {
             }
         });
 
-        // Send initialization response
-        const initResponse = {
-            jsonrpc: '2.0',
-            id: null,
-            result: {
-                name: Config.PROJECT.NAME,
-                version: Config.PROJECT.VERSION,
-                description: Config.PROJECT.DESCRIPTION,
-                tools: this.getToolDefinitions()
-            }
-        };
-        console.log(JSON.stringify(initResponse));
+        // Wait for requests - don't send anything on startup
+        console.error('MCP server ready, waiting for requests...');
     }
 
     async processRequest(request) {
         console.error('Processing request:', request.method);
         
-        if (request.method === 'tools/call') {
-            return await this.handleToolCall(request);
+        switch (request.method) {
+            case 'initialize':
+                return this.handleInitialize(request);
+            case 'tools/list':
+                return this.handleToolsList(request);
+            case 'tools/call':
+                return await this.handleToolCall(request);
+            default:
+                return ResponseBuilder.methodNotFound(request.id, request.method);
         }
-        
-        return ResponseBuilder.methodNotFound(request.id, request.method);
+    }
+
+    handleInitialize(request) {
+        return {
+            jsonrpc: '2.0',
+            id: request.id,
+            result: {
+                protocolVersion: '1.0',
+                serverInfo: {
+                    name: Config.PROJECT.NAME,
+                    version: Config.PROJECT.VERSION,
+                    description: Config.PROJECT.DESCRIPTION
+                },
+                capabilities: {
+                    tools: {}
+                }
+            }
+        };
+    }
+
+    handleToolsList(request) {
+        return {
+            jsonrpc: '2.0',
+            id: request.id,
+            result: {
+                tools: this.getToolDefinitions()
+            }
+        };
     }
 
     async handleToolCall(request) {
