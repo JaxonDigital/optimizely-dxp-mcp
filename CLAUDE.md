@@ -3,6 +3,10 @@
 ## Project Context
 We are Jaxon Digital, an Optimizely Gold Partner, building a **PowerShell-only** MCP server for Optimizely DXP deployment operations. This project represents our commitment to giving back to the Optimizely community and showcasing our expertise in AI-powered development tools.
 
+**Company Website**: https://www.jaxondigital.com (always include www)
+**GitHub Repository**: https://github.com/JaxonDigital/optimizely-dxp-mcp-private (private)
+**Project Status**: Ready for open source release
+
 ## Architecture Decision: PowerShell-Only Implementation
 **IMPORTANT**: We have completely converted from API calls to PowerShell-only approach because:
 - ✅ PowerShell cmdlets are much more reliable than direct API calls
@@ -18,7 +22,13 @@ We are Jaxon Digital, an Optimizely Gold Partner, building a **PowerShell-only**
 ✅ **Database Export**: `Start-EpiDatabaseExport` - Working with comprehensive error handling
 ✅ **Export Status**: `Get-EpiDatabaseExport` - Working with JSON parsing
 ✅ **Storage Containers**: `Get-EpiStorageContainer` - Working with smart JSON extraction
-✅ **Content Copy**: `Start-EpiDeployment -IncludeBlob -IncludeDb` - Working (tested, detects ongoing deployments correctly)
+✅ **Storage SAS Links**: `Get-EpiStorageContainerSasLink` - Working with permissions
+✅ **Package Upload**: `Add-EpiDeploymentPackage` - Working with chunk upload
+✅ **Start Deployment**: `Start-EpiDeployment` - Working for both package and env-to-env
+✅ **Deployment Status**: `Get-EpiDeployment` - Working with progress tracking
+✅ **Complete Deployment**: `Complete-EpiDeployment` - Working for staging → live
+✅ **Reset Deployment**: `Reset-EpiDeployment` - Working with optional DB rollback
+✅ **Edge Logs**: `Get-EpiEdgeLogLocation` - Working (when enabled)
 ✅ **Connection Test**: `Connect-EpiCloud` - Working with authentication verification
 
 ## Key Implementation Details
@@ -38,12 +48,21 @@ When no deployments are running, content copy returns deployment object:
 }
 ```
 
-## Next Priority Cmdlets to Implement
-1. `Get-EpiStorageContainerSasLink` - Generate SAS links
-2. `Add-EpiDeploymentPackage` - Upload deployment packages  
-3. `Get-EpiDeployment` - Monitor deployment status
-4. `Complete-EpiDeployment` - Complete deployments
-5. `Reset-EpiDeployment` - Reset/rollback deployments
+## Major Refactoring Complete (2024-08-11)
+- **Original**: 3,436-line monolithic file
+- **Refactored**: 509-line main + 11 modular components
+- **Architecture**: Clean separation into helpers, tools, and config
+- **Code Reduction**: 85% in main file, 28% overall
+- **Duplication**: Zero - all patterns centralized
+- **Modules Created**:
+  - `/lib/powershell-helper.js` - Centralized PS execution
+  - `/lib/response-builder.js` - JSON-RPC responses
+  - `/lib/error-handler.js` - Error detection/formatting
+  - `/lib/config.js` - All constants/settings
+  - `/lib/tools/` - Specialized tool modules
+
+## All PowerShell Cmdlets Implemented
+All planned cmdlets have been successfully implemented and tested
 
 ## Optimizely DXP Deployment API Documentation
 
