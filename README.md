@@ -3,7 +3,7 @@
 [![npm version](https://badge.fury.io/js/jaxon-optimizely-dxp-mcp.svg)](https://badge.fury.io/js/jaxon-optimizely-dxp-mcp)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-A **PowerShell-based Model Context Protocol (MCP) server** for Optimizely DXP deployment operations, built by [Jaxon Digital](https://jaxondigital.com) - your trusted **Optimizely Gold Partner**.
+A **PowerShell-based Model Context Protocol (MCP) server** for Optimizely DXP deployment operations, built by [Jaxon Digital](https://www.jaxondigital.com) - your trusted **Optimizely Gold Partner**.
 
 ## 🚀 About This Project
 
@@ -178,13 +178,13 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - Enterprise content management
 - E-commerce platform development
 
-Visit us at [jaxondigital.com](https://jaxondigital.com) to learn more about our services.
+Visit us at [www.jaxondigital.com](https://www.jaxondigital.com) to learn more about our services.
 
 ## 🆘 Support
 
 - 📋 **Issues**: [GitHub Issues](https://github.com/jaxondigital/jaxon-optimizely-dxp-mcp/issues)
 - 📧 **Contact**: [support@jaxondigital.com](mailto:support@jaxondigital.com)
-- 🌐 **Website**: [jaxondigital.com](https://jaxondigital.com)
+- 🌐 **Website**: [www.jaxondigital.com](https://www.jaxondigital.com)
 
 ---
 
