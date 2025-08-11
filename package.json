@@ -1,0 +1,45 @@
+{
+  "name": "jaxon-optimizely-dxp-mcp",
+  "version": "1.0.0",
+  "description": "Jaxon Digital's MCP server for Optimizely DXP deployment operations using PowerShell",
+  "main": "jaxon-optimizely-dxp-mcp.js",
+  "bin": {
+    "jaxon-optimizely-dxp-mcp": "./jaxon-optimizely-dxp-mcp.js"
+  },
+  "scripts": {
+    "start": "node jaxon-optimizely-dxp-mcp.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "jaxon",
+    "jaxon-digital",
+    "mcp",
+    "optimizely",
+    "dxp",
+    "deployment",
+    "database",
+    "export",
+    "powershell"
+  ],
+  "author": "Jaxon Digital",
+  "license": "MIT",
+  "dependencies": {
+    "node-fetch": "^3.3.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jaxondigital/jaxon-optimizely-dxp-mcp.git"
+  },
+  "homepage": "https://github.com/jaxondigital/jaxon-optimizely-dxp-mcp#readme",
+  "bugs": {
+    "url": "https://github.com/jaxondigital/jaxon-optimizely-dxp-mcp/issues"
+  },
+  "files": [
+    "jaxon-optimizely-dxp-mcp.js",
+    "README.md",
+    "LICENSE"
+  ]
+}

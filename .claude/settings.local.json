@@ -1,0 +1,31 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:github.com)",
+      "Bash(dotnet --version)",
+      "Bash(dotnet new:*)",
+      "Bash(dotnet add package:*)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "WebFetch(domain:docs.developers.optimizely.com)",
+      "Bash(dotnet build)",
+      "Bash(pkill:*)",
+      "Bash(nslookup:*)",
+      "WebFetch(domain:www.powershellgallery.com)",
+      "WebFetch(domain:optimizelyvisuals.dev)",
+      "Bash(pwsh:*)",
+      "Bash(dotnet run:*)",
+      "Bash(rm:*)",
+      "Bash(dotnet clean:*)",
+      "Bash(chmod:*)",
+      "Bash(npm install)",
+      "Bash(cp:*)",
+      "Bash(node:*)",
+      "WebFetch(domain:world.optimizely.com)",
+      "Bash(grep:*)",
+      "Bash(sed:*)",
+      "Bash(git init:*)",
+      "Bash(git add:*)"
+    ],
+    "deny": []
+  }
+}
