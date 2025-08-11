@@ -39,6 +39,7 @@
   },
   "files": [
     "jaxon-optimizely-dxp-mcp.js",
+    "lib/**/*",
     "README.md",
     "LICENSE"
   ]
