@@ -9,14 +9,20 @@
  */
 
 const readline = require('readline');
-const { ResponseBuilder, Config } = require('./lib');
+const path = require('path');
+
+// Use absolute paths for requires when script is run from different directory
+const libPath = path.join(__dirname, 'lib');
+const toolsPath = path.join(__dirname, 'lib', 'tools');
+
+const { ResponseBuilder, Config } = require(libPath);
 const { 
     DatabaseTools, 
     DeploymentTools, 
     StorageTools, 
     PackageTools, 
     LoggingTools 
-} = require('./lib/tools');
+} = require(toolsPath);
 
 class JaxonOptimizelyDxpMcp {
     constructor() {

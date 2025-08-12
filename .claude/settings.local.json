@@ -43,7 +43,8 @@
       "Bash(true)",
       "Bash(cat:*)",
       "Bash(claude:*)",
-      "Bash(npm install:*)"
+      "Bash(npm install:*)",
+      "Bash(npm ls:*)"
     ],
     "deny": []
   }
