@@ -63,7 +63,7 @@ const schemas = {
     start_deployment: z.object({
         sourceEnvironment: z.enum(['Integration', 'Preproduction', 'Production']),
         targetEnvironment: z.enum(['Integration', 'Preproduction', 'Production']),
-        deploymentType: z.enum(['code', 'content', 'all']).optional().default('code'),
+        deploymentType: z.enum(['code', 'content', 'all']).optional(), // Smart defaults based on direction
         sourceApps: z.array(z.string()).optional(),
         includeBlob: z.boolean().optional(),
         includeDatabase: z.boolean().optional(),
@@ -175,7 +175,7 @@ const toolDefinitions = [
     },
     {
         name: 'start_deployment',
-        description: 'Start a deployment to specified environment. deploymentType: "code" (default) deploys code only, "content" deploys blobs+database, "all" deploys everything. For Commerce projects, set sourceApps: ["cms", "commerce"]',
+        description: 'Start deployment between environments. Smart defaults: Upward (Int→Pre, Pre→Prod) deploys CODE; Downward (Prod→Pre/Int) copies CONTENT. Override with deploymentType: "code", "content", or "all". Commerce: set sourceApps: ["cms", "commerce"]',
         inputSchema: schemas.start_deployment
     },
     {
@@ -328,7 +328,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                 const hasApiSecret = !!process.env.OPTIMIZELY_API_SECRET;
                 const isConfigured = projectId && hasApiKey && hasApiSecret;
                 
-                let infoText = `📊 **Jaxon Optimizely DXP MCP Server v1.2.16**\n\n`;
+                let infoText = `📊 **Jaxon Optimizely DXP MCP Server v1.2.17**\n\n`;
                 
                 if (isConfigured) {
                     infoText += `✅ **Server is fully configured and ready!**\n\n` +

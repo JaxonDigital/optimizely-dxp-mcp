@@ -7,14 +7,16 @@ Manage your Optimizely DXP deployments through AI assistants! This MCP (Model Co
 
 Built by [Jaxon Digital](https://www.jaxondigital.com) - your trusted **Optimizely Gold Partner** and **AI Solutions Expert**.
 
-## 🎉 What's New in v1.2.16
+## 🎉 What's New in v1.2.17
 
-- 🚀 **FIXED: Environment-to-Environment Deployments** - Now properly includes SourceApp parameter (required by API)
-- 🎯 **Smart App Detection** - Automatically deploys CMS app, with support for Commerce projects
-- 📦 **Deployment Types** - Clear control with "code", "content", or "all" deployment options
+- 🧠 **Smart Deployment Defaults** - Automatically detects deployment type based on direction:
+  - **Upward** (Int→Pre, Pre→Prod): Deploys CODE
+  - **Downward** (Prod→Pre/Int): Copies CONTENT (BLOBs + Database)
+- 🚫 **Deployment Path Validation** - Prevents direct code deployment from Integration to Production
+- 🚀 **FIXED: Environment Deployments** - Properly includes SourceApp parameter for code deployments
+- 📦 **Flexible Control** - Override smart defaults with deploymentType: "code", "content", or "all"
 - 🔧 **Commerce Support** - Specify sourceApps: ["cms", "commerce"] for Commerce projects
-- 📊 **Better Error Messages** - Clear feedback when deployment configuration is invalid
-- 🔍 **Enhanced Debugging** - Detailed logging shows exactly what's being deployed
+- 🎯 **Best Practices Built-in** - Follows Optimizely DXP deployment patterns automatically
 
 ## 🤖 Compatible AI Assistants
 
