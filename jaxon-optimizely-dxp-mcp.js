@@ -32,6 +32,9 @@ const {
 
 // Define Zod schemas for each tool
 const schemas = {
+    // Server info
+    get_server_info: z.object({}),
+    
     // Database operations
     export_database: z.object({
         environment: z.enum(['Integration', 'Preproduction', 'Production']),
@@ -145,8 +148,13 @@ const schemas = {
 // Tool definitions
 const toolDefinitions = [
     {
+        name: 'get_server_info',
+        description: 'Get current MCP server configuration and active project details',
+        inputSchema: schemas.get_server_info
+    },
+    {
         name: 'export_database',
-        description: 'Export database from an Optimizely DXP environment',
+        description: 'Export database from an Optimizely DXP environment (uses configured project)',
         inputSchema: schemas.export_database
     },
     {
@@ -156,12 +164,12 @@ const toolDefinitions = [
     },
     {
         name: 'list_deployments',
-        description: 'List all deployments for the project',
+        description: 'List all deployments for the configured project',
         inputSchema: schemas.list_deployments
     },
     {
         name: 'start_deployment',
-        description: 'Start a deployment to specified environment',
+        description: 'Start a deployment to specified environment (uses configured project)',
         inputSchema: schemas.start_deployment
     },
     {
@@ -181,7 +189,7 @@ const toolDefinitions = [
     },
     {
         name: 'list_storage_containers',
-        description: 'List storage containers for an environment',
+        description: 'List storage containers for an environment (uses configured project)',
         inputSchema: schemas.list_storage_containers
     },
     {
@@ -206,7 +214,7 @@ const toolDefinitions = [
     },
     {
         name: 'copy_content',
-        description: 'Copy content between environments',
+        description: 'Copy content between environments (uses configured project)',
         inputSchema: schemas.copy_content
     }
 ];
@@ -269,11 +277,41 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         validatedArgs.projectId = process.env.OPTIMIZELY_PROJECT_ID;
     }
     
+    // Log which project is being used (to stderr to avoid polluting stdout)
+    if (validatedArgs.projectId && toolName !== 'get_server_info') {
+        console.error(`Using project: ${validatedArgs.projectId}`);
+    }
+    
     // Execute tool
     try {
         let result;
         
         switch (toolName) {
+            // Server info
+            case 'get_server_info':
+                const projectId = process.env.OPTIMIZELY_PROJECT_ID || 'Not configured';
+                const hasApiKey = !!process.env.OPTIMIZELY_API_KEY;
+                const hasApiSecret = !!process.env.OPTIMIZELY_API_SECRET;
+                
+                result = {
+                    result: {
+                        content: [{
+                            type: 'text',
+                            text: `📊 **Jaxon Optimizely DXP MCP Server v1.2.8**\n\n` +
+                                  `**Current Configuration:**\n` +
+                                  `• Project ID: \`${projectId}\`\n` +
+                                  `• API Key: ${hasApiKey ? '✅ Configured' : '❌ Not configured'}\n` +
+                                  `• API Secret: ${hasApiSecret ? '✅ Configured' : '❌ Not configured'}\n\n` +
+                                  `**Notes:**\n` +
+                                  `• All tools automatically use the configured project ID\n` +
+                                  `• You can override credentials by passing them as parameters\n` +
+                                  `• Configuration is loaded from environment variables\n\n` +
+                                  `Built by Jaxon Digital - Optimizely Gold Partner`
+                        }]
+                    }
+                };
+                break;
+            
             // Database operations
             case 'export_database':
                 result = await DatabaseTools.handleExportDatabase(null, validatedArgs);
