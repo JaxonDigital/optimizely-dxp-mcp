@@ -1,9 +1,0 @@
-{
-  "mcpServers": {
-    "optimizely-dxp": {
-      "command": "node",
-      "args": ["/Users/bgerby/Documents/dev/deployment-mcp/optimizely-mcp-server.js"],
-      "env": {}
-    }
-  }
-}
