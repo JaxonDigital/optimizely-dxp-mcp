@@ -27,28 +27,28 @@ class JaxonOptimizelyDxpMcp {
     }
 
     async run() {
-        console.error(`Starting ${Config.PROJECT.NAME}`);
-        console.error(`${Config.COMPANY.NAME} - ${Config.COMPANY.PARTNER_STATUS}`);
-        console.error(`Website: ${Config.COMPANY.WEBSITE}`);
-
+        // Remove startup messages - they can interfere with MCP protocol
         this.rl.on('line', async (line) => {
             try {
                 const request = JSON.parse(line);
                 const response = await this.processRequest(request);
                 console.log(JSON.stringify(response));
             } catch (error) {
-                console.error('Error processing request:', error);
+                // Only log errors in debug mode
+                if (process.env.DEBUG) {
+                    console.error('Error processing request:', error);
+                }
                 const errorResponse = ResponseBuilder.internalError(null, 'Failed to process request', error.message);
                 console.log(JSON.stringify(errorResponse));
             }
         });
-
-        // Wait for requests - don't send anything on startup
-        console.error('MCP server ready, waiting for requests...');
     }
 
     async processRequest(request) {
-        console.error('Processing request:', request.method);
+        // Debug logging only when DEBUG env var is set
+        if (process.env.DEBUG) {
+            console.error('Processing request:', request.method);
+        }
         
         switch (request.method) {
             case 'initialize':
@@ -92,7 +92,9 @@ class JaxonOptimizelyDxpMcp {
 
     async handleToolCall(request) {
         const toolCall = request.params;
-        console.error('Tool call:', toolCall.name);
+        if (process.env.DEBUG) {
+            console.error('Tool call:', toolCall.name);
+        }
         
         try {
             switch (toolCall.name) {
