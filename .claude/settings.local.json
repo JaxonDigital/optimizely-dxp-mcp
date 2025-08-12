@@ -36,7 +36,9 @@
       "Bash(brew list:*)",
       "Bash(git reset:*)",
       "Bash(grep:*)",
-      "Bash(mv:*)"
+      "Bash(mv:*)",
+      "mcp__jaxon-optimizely-dxp-mcp__export_database",
+      "Bash(git commit:*)"
     ],
     "deny": [],
     "ask": []
