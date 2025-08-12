@@ -267,14 +267,14 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     }
     
     // Inject environment credentials if not provided
+    if (!validatedArgs.projectId) {
+        validatedArgs.projectId = process.env.OPTIMIZELY_PROJECT_ID;
+    }
     if (!validatedArgs.apiKey) {
         validatedArgs.apiKey = process.env.OPTIMIZELY_API_KEY;
     }
     if (!validatedArgs.apiSecret) {
         validatedArgs.apiSecret = process.env.OPTIMIZELY_API_SECRET;
-    }
-    if (!validatedArgs.projectId) {
-        validatedArgs.projectId = process.env.OPTIMIZELY_PROJECT_ID;
     }
     
     // Log which project is being used (to stderr to avoid polluting stdout)
@@ -322,7 +322,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                 const hasApiSecret = !!process.env.OPTIMIZELY_API_SECRET;
                 const isConfigured = projectId && hasApiKey && hasApiSecret;
                 
-                let infoText = `📊 **Jaxon Optimizely DXP MCP Server v1.2.11**\n\n`;
+                let infoText = `📊 **Jaxon Optimizely DXP MCP Server v1.2.12**\n\n`;
                 
                 if (isConfigured) {
                     infoText += `✅ **Server is fully configured and ready!**\n\n` +
@@ -348,9 +348,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                                    `• apiKey: "your-api-key"\n` +
                                    `• apiSecret: "your-api-secret"\n\n` +
                                    `**Option 2: Configure environment variables (recommended)**\n` +
-                                   `Edit your Claude Desktop config at:\n` +
-                                   `\`~/Library/Application Support/Claude/claude_desktop_config.json\`\n\n` +
-                                   `Add under the jaxon-optimizely-dxp section:\n` +
+                                   `Edit your MCP client config and add:\n\n` +
                                    `\`\`\`json\n` +
                                    `"env": {\n` +
                                    `  "OPTIMIZELY_PROJECT_ID": "your-project-id",\n` +
@@ -358,7 +356,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                                    `  "OPTIMIZELY_API_SECRET": "your-api-secret"\n` +
                                    `}\n` +
                                    `\`\`\`\n\n` +
-                                   `Then restart Claude Desktop.\n`;
+                                   `Then restart your MCP client.\n`;
                     }
                 }
                 

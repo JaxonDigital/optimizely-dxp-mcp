@@ -60,9 +60,9 @@ Install-Module EpiCloud -Force
 
 ### 3. Your Optimizely Credentials (Optional)
 You can set these up now or later:
-- API Key from your DXP Portal
-- API Secret from your DXP Portal  
 - Your Project ID
+- API Key from your DXP Portal
+- API Secret from your DXP Portal
 
 Don't have these yet? No problem! You can still install and your AI assistant will guide you when needed.
 
@@ -96,9 +96,9 @@ Add this if you want to automatically use your credentials:
     "jaxon-optimizely-dxp": {
       "command": "jaxon-optimizely-dxp-mcp",
       "env": {
+        "OPTIMIZELY_PROJECT_ID": "your-project-id-here",
         "OPTIMIZELY_API_KEY": "your-api-key-here",
-        "OPTIMIZELY_API_SECRET": "your-api-secret-here",
-        "OPTIMIZELY_PROJECT_ID": "your-project-id-here"
+        "OPTIMIZELY_API_SECRET": "your-api-secret-here"
       }
     }
   }
@@ -131,9 +131,9 @@ The MCP server can be used with any client that supports the Model Context Proto
 
 1. **Command**: `jaxon-optimizely-dxp-mcp` (after npm global install)
 2. **Environment Variables** (optional):
+   - `OPTIMIZELY_PROJECT_ID`: Your project ID
    - `OPTIMIZELY_API_KEY`: Your API key
    - `OPTIMIZELY_API_SECRET`: Your API secret
-   - `OPTIMIZELY_PROJECT_ID`: Your project ID
 
 Consult your MCP client's documentation for specific configuration instructions. The server follows standard MCP protocols and will work with any compliant client.
 
