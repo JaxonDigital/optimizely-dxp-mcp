@@ -30,12 +30,20 @@ class JaxonOptimizelyDxpMcp {
             input: process.stdin,
             output: process.stdout
         });
+        this.isConnected = false;
+        this.heartbeatInterval = null;
+        this.lastActivity = Date.now();
+        this.connectionTimeout = 60000; // 60 seconds timeout
     }
 
     async run() {
+        // Set up connection monitoring
+        this.startConnectionMonitoring();
+        
         // Remove startup messages - they can interfere with MCP protocol
         this.rl.on('line', async (line) => {
             try {
+                this.lastActivity = Date.now();
                 const request = JSON.parse(line);
                 const response = await this.processRequest(request);
                 console.log(JSON.stringify(response));
@@ -48,6 +56,54 @@ class JaxonOptimizelyDxpMcp {
                 console.log(JSON.stringify(errorResponse));
             }
         });
+        
+        // Handle graceful shutdown
+        process.on('SIGINT', () => this.shutdown());
+        process.on('SIGTERM', () => this.shutdown());
+    }
+    
+    startConnectionMonitoring() {
+        // Send periodic heartbeat notifications to maintain connection
+        this.heartbeatInterval = setInterval(() => {
+            if (this.isConnected) {
+                try {
+                    // Send a notification (not requiring response) to keep connection alive
+                    const notification = {
+                        jsonrpc: '2.0',
+                        method: 'notification/heartbeat',
+                        params: {
+                            timestamp: Date.now(),
+                            status: 'alive'
+                        }
+                    };
+                    console.log(JSON.stringify(notification));
+                    
+                    // Check for timeout
+                    if (Date.now() - this.lastActivity > this.connectionTimeout) {
+                        if (process.env.DEBUG) {
+                            console.error('Connection timeout - no activity for', this.connectionTimeout, 'ms');
+                        }
+                        // Don't exit, just mark as potentially disconnected
+                        this.isConnected = false;
+                    }
+                } catch (error) {
+                    // Handle write errors gracefully (e.g., when stdout is closed)
+                    if (process.env.DEBUG) {
+                        console.error('Heartbeat write error:', error.message);
+                    }
+                    clearInterval(this.heartbeatInterval);
+                    this.isConnected = false;
+                }
+            }
+        }, 15000); // Send heartbeat every 15 seconds
+    }
+    
+    shutdown() {
+        if (this.heartbeatInterval) {
+            clearInterval(this.heartbeatInterval);
+        }
+        this.isConnected = false;
+        process.exit(0);
     }
 
     async processRequest(request) {
@@ -63,12 +119,34 @@ class JaxonOptimizelyDxpMcp {
                 return this.handleToolsList(request);
             case 'tools/call':
                 return await this.handleToolCall(request);
+            case 'ping':
+                return this.handlePing(request);
+            case 'notification/heartbeat':
+                // Heartbeat notifications don't require a response
+                return null;
             default:
                 return ResponseBuilder.methodNotFound(request.id, request.method);
         }
     }
+    
+    handlePing(request) {
+        // Respond to ping requests to confirm connection
+        return {
+            jsonrpc: '2.0',
+            id: request.id,
+            result: {
+                status: 'pong',
+                timestamp: Date.now(),
+                connected: this.isConnected
+            }
+        };
+    }
 
     handleInitialize(request) {
+        // Mark as connected when initialized
+        this.isConnected = true;
+        this.lastActivity = Date.now();
+        
         return {
             jsonrpc: '2.0',
             id: request.id,
@@ -81,7 +159,11 @@ class JaxonOptimizelyDxpMcp {
                 },
                 capabilities: {
                     tools: {},
-                    prompts: {}
+                    prompts: {},
+                    experimental: {
+                        heartbeat: true,
+                        persistentConnection: true
+                    }
                 }
             }
         };
