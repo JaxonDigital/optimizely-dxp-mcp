@@ -7,7 +7,15 @@ Manage your Optimizely DXP deployments through AI assistants! This MCP (Model Co
 
 Built by [Jaxon Digital](https://www.jaxondigital.com) - your trusted **Optimizely Gold Partner** and **AI Solutions Expert**.
 
-## 🎉 What's New in v1.2.20
+## 🎉 What's New in v1.2.23
+
+### 🎨 Enhanced User Experience
+- **Project-Centric Interface** - Changed from "server info" to "project info" with project name prominently displayed
+- **Project Names in Deployments** - List deployments now shows project name in the header
+- **Always Shows Preview URLs** - Preview URLs are prominently displayed for deployments awaiting verification
+- **Cleaner Status Display** - Removed technical command references, using friendly language instead
+- **Better Action Guidance** - Clear next steps shown for deployments (complete/reset) without technical syntax
+- **Improved Progress Indicators** - Visual checkmarks (✅) for completed steps and progress
 
 ### 🌟 Major Feature: Multi-Project Support!
 - **Manage Multiple Projects** - Switch between projects seamlessly in conversations

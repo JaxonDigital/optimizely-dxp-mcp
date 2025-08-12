@@ -32,8 +32,8 @@ const {
 
 // Define Zod schemas for each tool
 const schemas = {
-    // Server info
-    get_server_info: z.object({}),
+    // Project info
+    get_project_info: z.object({}),
     
     // Database operations
     export_database: z.object({
@@ -154,9 +154,9 @@ const schemas = {
 // Tool definitions
 const toolDefinitions = [
     {
-        name: 'get_server_info',
-        description: 'Get current MCP server configuration and active project details',
-        inputSchema: schemas.get_server_info
+        name: 'get_project_info',
+        description: 'Get current Optimizely project name and configuration details',
+        inputSchema: schemas.get_project_info
     },
     {
         name: 'export_database',
@@ -284,12 +284,12 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     }
     
     // Log which project is being used (to stderr to avoid polluting stdout)
-    if (validatedArgs.projectId && toolName !== 'get_server_info') {
+    if (validatedArgs.projectId && toolName !== 'get_project_info') {
         console.error(`Using project: ${validatedArgs.projectId}`);
     }
     
-    // Check for missing credentials (except for get_server_info)
-    if (toolName !== 'get_server_info') {
+    // Check for missing credentials (except for get_project_info)
+    if (toolName !== 'get_project_info') {
         const missingCreds = [];
         if (!validatedArgs.projectId) missingCreds.push('Project ID');
         if (!validatedArgs.apiKey) missingCreds.push('API Key');
@@ -308,8 +308,8 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                           `• apiKey: "your-api-key"\n` +
                           `• apiSecret: "your-api-secret"\n\n` +
                           `**Option 2:** Configure environment variables in Claude Desktop:\n` +
-                          `Run the \`get_server_info\` tool for detailed setup instructions.\n\n` +
-                          `💡 **Tip:** Use \`get_server_info\` to check your current configuration.`
+                          `Run the \`get_project_info\` tool for detailed setup instructions.\n\n` +
+                          `💡 **Tip:** Use \`get_project_info\` to check your current configuration.`
                 }],
                 isError: true
             };
@@ -321,24 +321,34 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         let result;
         
         switch (toolName) {
-            // Server info
-            case 'get_server_info':
+            // Project info
+            case 'get_project_info':
                 const projectId = process.env.OPTIMIZELY_PROJECT_ID;
+                const projectName = process.env.OPTIMIZELY_PROJECT_NAME;
                 const hasApiKey = !!process.env.OPTIMIZELY_API_KEY;
                 const hasApiSecret = !!process.env.OPTIMIZELY_API_SECRET;
                 const isConfigured = projectId && hasApiKey && hasApiSecret;
                 
-                let infoText = `📊 **Jaxon Optimizely DXP MCP Server v1.2.20**\n\n`;
+                let infoText = `📊 **Optimizely DXP Project Information**\n\n`;
                 
                 if (isConfigured) {
-                    infoText += `✅ **Server is fully configured and ready!**\n\n` +
-                               `**Current Configuration:**\n` +
-                               `• Project ID: \`${projectId}\`\n` +
+                    // Lead with project name if available
+                    if (projectName) {
+                        infoText += `✅ **Active Project: ${projectName}**\n\n`;
+                    } else {
+                        infoText += `✅ **Project is configured and ready!**\n\n`;
+                    }
+                    
+                    infoText += `**Project Details:**\n`;
+                    
+                    // Show project name first if available
+                    if (projectName) {
+                        infoText += `• Name: **${projectName}**\n`;
+                    }
+                    
+                    infoText += `• Project ID: \`${projectId}\`\n` +
                                `• API Key: ✅ Configured\n` +
-                               `• API Secret: ✅ Configured\n\n` +
-                               `**Notes:**\n` +
-                               `• All tools automatically use these credentials\n` +
-                               `• You can override by passing different credentials as parameters\n`;
+                               `• API Secret: ✅ Configured\n`;
                 } else {
                     infoText += `⚠️ **Configuration Required**\n\n` +
                                `**Current Status:**\n` +
