@@ -31,6 +31,10 @@ This MCP server uses a **PowerShell-only approach** because:
 - ✅ PowerShell provides better error handling and structured responses
 - ✅ Official Optimizely support through the EpiCloud module
 
+## ⚠️ Known Issues
+
+**Claude Code Connection**: Some users may see "Failed to connect" in Claude Code even though the server is working correctly. This is a known Claude Code platform issue, not a problem with the MCP server. The server implementation has been verified to work correctly when tested directly.
+
 ## 📋 Prerequisites
 
 Before using this MCP server, ensure you have:
