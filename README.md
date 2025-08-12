@@ -5,9 +5,9 @@
 
 Manage your Optimizely DXP deployments through AI assistants! This MCP (Model Context Protocol) server works with Claude, ChatGPT, or any AI tool that supports MCP. Deploy code, export databases, sync content, and manage your DXP environments through simple conversations.
 
-Built by [Jaxon Digital](https://www.jaxondigital.com) - your trusted **Optimizely Gold Partner**.
+Built by [Jaxon Digital](https://www.jaxondigital.com) - your trusted **Optimizely Gold Partner** and **AI Solutions Expert**.
 
-## 🎉 What's New in v1.2.11
+## 🎉 What's New in v1.2.13
 
 - ✅ **Universal Compatibility** - Works with any MCP-compatible AI assistant
 - ✅ **Simplified Setup** - Credentials are now optional and can be configured later
@@ -206,11 +206,14 @@ Ask your AI to "check server configuration" for setup instructions
 
 ## 🏢 About Jaxon Digital
 
-**Jaxon Digital** is a certified **Optimizely Gold Partner** helping businesses succeed with:
-- Digital experience platforms
-- E-commerce solutions
-- Content management systems
-- Marketing automation
+**Jaxon Digital** is a certified **Optimizely Gold Partner** specializing in:
+- **Artificial Intelligence Initiatives** - AI-powered solutions for business transformation
+- **Optimizely DXP** - Full digital experience platform implementations
+- **Optimizely CMS** - Content management and multi-site solutions
+- **Optimizely Commerce** - B2B and B2C e-commerce platforms
+- **Optimizely Campaign** - Marketing automation and personalization
+
+We help businesses leverage AI and modern technology to transform their digital experiences.
 
 Visit [www.jaxondigital.com](https://www.jaxondigital.com) to learn more.
 
