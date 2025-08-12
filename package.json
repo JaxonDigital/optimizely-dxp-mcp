@@ -31,11 +31,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jaxondigital/jaxon-optimizely-dxp-mcp.git"
+    "url": "git+https://github.com/JaxonDigital/optimizely-dxp-mcp.git"
   },
-  "homepage": "https://github.com/jaxondigital/jaxon-optimizely-dxp-mcp#readme",
+  "homepage": "https://github.com/JaxonDigital/optimizely-dxp-mcp#readme",
   "bugs": {
-    "url": "https://github.com/jaxondigital/jaxon-optimizely-dxp-mcp/issues"
+    "url": "https://github.com/JaxonDigital/optimizely-dxp-mcp/issues"
   },
   "files": [
     "jaxon-optimizely-dxp-mcp.js",

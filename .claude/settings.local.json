@@ -44,7 +44,11 @@
       "Bash(cat:*)",
       "Bash(claude:*)",
       "Bash(npm install:*)",
-      "Bash(npm ls:*)"
+      "Bash(npm ls:*)",
+      "Bash(mv:*)",
+      "Bash(npm link:*)",
+      "Bash(npm pack:*)",
+      "Bash(npm publish:*)"
     ],
     "deny": []
   }
