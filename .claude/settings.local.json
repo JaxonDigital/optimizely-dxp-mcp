@@ -38,7 +38,12 @@
       "Bash(git remote set-url:*)",
       "Bash(git filter-branch:*)",
       "Bash(git checkout:*)",
-      "Bash(mkdir:*)"
+      "Bash(mkdir:*)",
+      "Bash(timeout:*)",
+      "Bash(true)",
+      "Bash(cat:*)",
+      "Bash(claude:*)",
+      "Bash(npm install:*)"
     ],
     "deny": []
   }

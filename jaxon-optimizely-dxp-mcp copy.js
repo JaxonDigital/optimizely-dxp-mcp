@@ -27,28 +27,28 @@ class JaxonOptimizelyDxpMcp {
     }
 
     async run() {
-        // Remove startup messages - they can interfere with MCP protocol
+        console.error(`Starting ${Config.PROJECT.NAME}`);
+        console.error(`${Config.COMPANY.NAME} - ${Config.COMPANY.PARTNER_STATUS}`);
+        console.error(`Website: ${Config.COMPANY.WEBSITE}`);
+
         this.rl.on('line', async (line) => {
             try {
                 const request = JSON.parse(line);
                 const response = await this.processRequest(request);
                 console.log(JSON.stringify(response));
             } catch (error) {
-                // Only log errors in debug mode
-                if (process.env.DEBUG) {
-                    console.error('Error processing request:', error);
-                }
+                console.error('Error processing request:', error);
                 const errorResponse = ResponseBuilder.internalError(null, 'Failed to process request', error.message);
                 console.log(JSON.stringify(errorResponse));
             }
         });
+
+        // Wait for requests - don't send anything on startup
+        console.error('MCP server ready, waiting for requests...');
     }
 
     async processRequest(request) {
-        // Debug logging only when DEBUG env var is set
-        if (process.env.DEBUG) {
-            console.error('Processing request:', request.method);
-        }
+        console.error('Processing request:', request.method);
         
         switch (request.method) {
             case 'initialize':
@@ -67,15 +67,14 @@ class JaxonOptimizelyDxpMcp {
             jsonrpc: '2.0',
             id: request.id,
             result: {
-                protocolVersion: '0.1.0',
+                protocolVersion: '1.0',
                 serverInfo: {
                     name: Config.PROJECT.NAME,
                     version: Config.PROJECT.VERSION,
                     description: Config.PROJECT.DESCRIPTION
                 },
                 capabilities: {
-                    tools: {},
-                    prompts: {}
+                    tools: {}
                 }
             }
         };
@@ -93,9 +92,7 @@ class JaxonOptimizelyDxpMcp {
 
     async handleToolCall(request) {
         const toolCall = request.params;
-        if (process.env.DEBUG) {
-            console.error('Tool call:', toolCall.name);
-        }
+        console.error('Tool call:', toolCall.name);
         
         try {
             switch (toolCall.name) {
