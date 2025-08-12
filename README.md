@@ -5,9 +5,14 @@
 
 A **PowerShell-based Model Context Protocol (MCP) server** for Optimizely DXP deployment operations, built by [Jaxon Digital](https://www.jaxondigital.com) - your trusted **Optimizely Gold Partner**.
 
-## 🎉 Version 1.2 - SDK-Based Implementation
+## 🎉 Version 1.2.4 - SDK-Based Implementation
 
-**New in v1.2:** Built with the official `@modelcontextprotocol/sdk` for full compatibility with Claude Desktop and other MCP clients.
+**Latest v1.2.4 Updates:**
+- ✅ Added `list_deployments` tool to view all deployments
+- ✅ Fixed credential handling with environment variable support
+- ✅ Fixed SAS link generation for storage containers
+- ✅ Fixed content copy operations between environments
+- ✅ Full compatibility with Claude Desktop and Claude Code CLI
 
 ## 🚀 About This Project
 
@@ -69,6 +74,8 @@ Before using this MCP server, ensure you have:
    ```
 
 3. **Optimizely DXP API credentials** (API Key, API Secret, Project ID)
+   - Obtain from your Optimizely DXP Portal
+   - Ensure credentials have appropriate permissions for deployment operations
 
 ## 🚀 Quick Start
 
@@ -77,27 +84,52 @@ Before using this MCP server, ensure you have:
 npm install -g jaxon-optimizely-dxp-mcp
 ```
 
-### Claude Code Configuration
+### Configuration
 
-#### Using Claude CLI
-```bash
-# Add the MCP server to Claude Code
-claude mcp add jaxon-optimizely-dxp-mcp jaxon-optimizely-dxp-mcp
+#### Claude Desktop Configuration
 
-# Or use the full node path if needed
-claude mcp add jaxon-optimizely-dxp-mcp node /path/to/jaxon-optimizely-dxp-mcp.js
-```
-
-#### Manual Configuration
-Add to your MCP client configuration:
+Edit your Claude Desktop config file:
+- macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`
+- Windows: `%APPDATA%\Claude\claude_desktop_config.json`
+- Linux: `~/.config/Claude/claude_desktop_config.json`
 
 ```json
 {
   "mcpServers": {
-    "jaxon-optimizely-dxp-mcp": {
+    "jaxon-optimizely-dxp": {
       "command": "jaxon-optimizely-dxp-mcp",
-      "args": []
+      "env": {
+        "OPTIMIZELY_API_KEY": "your-api-key-here",
+        "OPTIMIZELY_API_SECRET": "your-api-secret-here",
+        "OPTIMIZELY_PROJECT_ID": "your-project-id-here"
+      }
     }
+  }
+}
+```
+
+#### Claude Code CLI Configuration
+
+```bash
+# Add the MCP server with environment variables
+claude mcp add jaxon-optimizely-dxp-mcp jaxon-optimizely-dxp-mcp
+```
+
+Then set environment variables in your shell:
+```bash
+export OPTIMIZELY_API_KEY="your-api-key-here"
+export OPTIMIZELY_API_SECRET="your-api-secret-here"
+export OPTIMIZELY_PROJECT_ID="your-project-id-here"
+```
+
+#### Alternative: Pass Credentials Per Tool
+
+You can also provide credentials directly when calling each tool:
+```json
+{
+  "mcpServers": {
+    "jaxon-optimizely-dxp": {
+      "command": "jaxon-optimizely-dxp-mcp"
   }
 }
 ```
@@ -125,11 +157,13 @@ node test-storage-interactive.js
 ## 🛠️ Available Tools
 
 ### Deployment Management
+- `list_deployments` - List all deployments for the project
 - `upload_deployment_package` - Upload NuGet packages for deployment
 - `start_deployment` - Deploy packages or sync content between environments  
 - `get_deployment_status` - Monitor deployment progress and status
 - `complete_deployment` - Complete deployments (move from staging to live)
 - `reset_deployment` - Reset/rollback deployments
+- `deploy_package_and_start` - Upload and deploy in one operation
 
 ### Database Operations
 - `export_database` - Export databases as BACPAC files
@@ -140,20 +174,29 @@ node test-storage-interactive.js
 - `list_storage_containers` - List available BLOB storage containers
 - `generate_storage_sas_link` - Generate SAS URLs for container access
 
+### Logging
+- `get_edge_logs` - Retrieve application and edge logs
+
 ## 📖 Usage Examples
+
+### List All Deployments
+```json
+{
+  "name": "list_deployments",
+  "arguments": {
+    "projectId": "your-project-id"
+  }
+}
+```
 
 ### Deploy a Package
 ```json
 {
   "name": "start_deployment",
   "arguments": {
-    "apiKey": "your-api-key",
-    "apiSecret": "your-api-secret", 
-    "projectId": "your-project-id",
-    "targetEnvironment": "Integration",
-    "packages": ["mysite.cms.app.1.0.0.nupkg"],
-    "directDeploy": false,
-    "useMaintenancePage": true
+    "sourceEnvironment": "Integration",
+    "targetEnvironment": "Preproduction",
+    "projectId": "your-project-id"
   }
 }
 ```
@@ -163,8 +206,6 @@ node test-storage-interactive.js
 {
   "name": "copy_content", 
   "arguments": {
-    "apiKey": "your-api-key",
-    "apiSecret": "your-api-secret",
     "projectId": "your-project-id", 
     "sourceEnvironment": "Production",
     "targetEnvironment": "Preproduction",

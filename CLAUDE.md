@@ -139,3 +139,49 @@ npm run typecheck
 - This is a known Claude Code bug affecting stdio MCP connections
 - Issue affects multiple MCP servers, not specific to this implementation
 - No code changes needed - wait for Claude Code platform fix
+## SDK Migration Success (2025-08-12)
+
+### Problem Solved
+Successfully migrated from manual JSON-RPC implementation to official `@modelcontextprotocol/sdk`, resolving compatibility issues with Claude Desktop.
+
+### Solution Implemented (v1.2.0)
+- **File**: `jaxon-optimizely-dxp-mcp-sdk.js` - New SDK-based implementation
+- **Dependencies**: 
+  - `@modelcontextprotocol/sdk@^1.17.2`
+  - `zod@^3.24.0`
+  - `zod-to-json-schema@^3.24.1`
+- **Key Changes**:
+  - Uses SDK's `Server` class and `StdioServerTransport`
+  - Implements proper request handlers with `ListToolsRequestSchema` and `CallToolRequestSchema`
+  - Zod schemas for all 12 tools with input validation
+  - Clean error handling using SDK patterns
+
+### Testing Status
+- **Direct testing**: ✅ Working (test-v2.js confirms initialization and tools/list)
+- **Claude Desktop**: ✅ Working (user confirmed)
+- **Claude Code CLI**: ❓ To be tested after restart
+- **Published**: ✅ v1.2.0 on npm
+
+### Configuration
+**Claude Desktop** (`~/Library/Application Support/Claude/claude_desktop_config.json`):
+```json
+{
+  "mcpServers": {
+    "jaxon-optimizely-dxp": {
+      "command": "node",
+      "args": ["/Users/bgerby/Documents/dev/deployment-mcp/jaxon-optimizely-dxp-mcp-sdk.js"]
+    }
+  }
+}
+```
+
+**Claude Code CLI**:
+```bash
+claude mcp add jaxon-optimizely-dxp-mcp "jaxon-optimizely-dxp-mcp"
+```
+
+### Important Notes
+- Must restart Claude Code/Desktop after configuration changes
+- SDK version ensures compatibility with official MCP clients
+- All 12 Optimizely DXP tools maintained with proper validation
+EOF < /dev/null

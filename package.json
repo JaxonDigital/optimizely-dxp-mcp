@@ -1,10 +1,10 @@
 {
   "name": "jaxon-optimizely-dxp-mcp",
-  "version": "1.2.1",
+  "version": "1.2.4",
   "description": "Jaxon Digital's MCP server for Optimizely DXP deployment operations using PowerShell - SDK version for full Claude compatibility",
-  "main": "jaxon-optimizely-dxp-mcp-sdk.js",
+  "main": "jaxon-optimizely-dxp-mcp.js",
   "bin": {
-    "jaxon-optimizely-dxp-mcp": "./jaxon-optimizely-dxp-mcp-sdk.js"
+    "jaxon-optimizely-dxp-mcp": "./jaxon-optimizely-dxp-mcp.js"
   },
   "scripts": {
     "start": "node jaxon-optimizely-dxp-mcp.js",
@@ -40,7 +40,7 @@
     "url": "https://github.com/JaxonDigital/optimizely-dxp-mcp/issues"
   },
   "files": [
-    "jaxon-optimizely-dxp-mcp-sdk.js",
+    "jaxon-optimizely-dxp-mcp.js",
     "lib/**/*",
     "README.md",
     "LICENSE"
