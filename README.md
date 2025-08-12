@@ -61,13 +61,24 @@ Before using this MCP server, ensure you have:
 npm install -g jaxon-optimizely-dxp-mcp
 ```
 
-### MCP Client Configuration
-Add to your MCP client configuration (e.g., Claude Code):
+### Claude Code Configuration
+
+#### Using Claude CLI
+```bash
+# Add the MCP server to Claude Code
+claude mcp add jaxon-optimizely-dxp-mcp jaxon-optimizely-dxp-mcp
+
+# Or use the full node path if needed
+claude mcp add jaxon-optimizely-dxp-mcp node /path/to/jaxon-optimizely-dxp-mcp.js
+```
+
+#### Manual Configuration
+Add to your MCP client configuration:
 
 ```json
 {
   "mcpServers": {
-    "jaxon-optimizely-dxp": {
+    "jaxon-optimizely-dxp-mcp": {
       "command": "jaxon-optimizely-dxp-mcp",
       "args": []
     }
@@ -82,6 +93,18 @@ cd jaxon-optimizely-dxp-mcp
 npm install
 node jaxon-optimizely-dxp-mcp.js
 ```
+
+### Testing the Server
+Use the included interactive client to test functionality:
+```bash
+# Interactive client with menu-driven interface
+node mcp-client.js
+
+# Or test individual operations
+node test-storage-interactive.js
+```
+
+**Note**: The server may show as "not connected" in `claude mcp list` but will work correctly. This is a known display issue that doesn't affect functionality.
 
 ## 🛠️ Available Tools
 
@@ -155,6 +178,37 @@ node jaxon-optimizely-dxp-mcp.js
 - **Preproduction** - Staging environment for final validation  
 - **Production** - Live environment
 - **ADE1-ADE6** - Additional development environments
+
+## 🔍 Troubleshooting
+
+### Claude Code Shows "Failed to connect"
+**Known Issue**: When running `claude mcp list`, the server may show as "Failed to connect" even though it's working correctly.
+
+**Solution**: This is a false negative. The server is functional despite this message. You can verify it works by:
+1. Testing with the included `mcp-client.js` script
+2. Running: `echo '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{}}' | node jaxon-optimizely-dxp-mcp.js`
+
+The MCP tools will still be available in Claude Code despite the connection warning.
+
+### PowerShell Module Not Found
+If you see errors about the EpiCloud module:
+```bash
+# Install the module globally
+pwsh -c "Install-Module EpiCloud -Force -Scope AllUsers"
+
+# Or for current user only
+pwsh -c "Install-Module EpiCloud -Force -Scope CurrentUser"
+```
+
+### Permission Errors on macOS/Linux
+```bash
+# Make the script executable
+chmod +x jaxon-optimizely-dxp-mcp.js
+
+# If using global install, might need to reinstall
+npm uninstall -g jaxon-optimizely-dxp-mcp
+npm install -g jaxon-optimizely-dxp-mcp
+```
 
 ## 🤝 Contributing
 
