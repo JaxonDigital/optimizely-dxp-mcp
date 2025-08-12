@@ -37,8 +37,8 @@ class JaxonOptimizelyDxpMcp {
     }
 
     async run() {
-        // Set up connection monitoring
-        this.startConnectionMonitoring();
+        // Don't start heartbeat until after initialization
+        // this.startConnectionMonitoring() moved to handleInitialize
         
         // Remove startup messages - they can interfere with MCP protocol
         this.rl.on('line', async (line) => {
@@ -63,20 +63,33 @@ class JaxonOptimizelyDxpMcp {
     }
     
     startConnectionMonitoring() {
+        // Only start if not already running
+        if (this.heartbeatInterval) {
+            return;
+        }
+        
         // Send periodic heartbeat notifications to maintain connection
         this.heartbeatInterval = setInterval(() => {
             if (this.isConnected) {
                 try {
-                    // Send a notification (not requiring response) to keep connection alive
-                    const notification = {
-                        jsonrpc: '2.0',
-                        method: 'notification/heartbeat',
-                        params: {
-                            timestamp: Date.now(),
-                            status: 'alive'
-                        }
-                    };
-                    console.log(JSON.stringify(notification));
+                    // Only send heartbeat if stdout is writable
+                    if (process.stdout.writable) {
+                        // Send a notification (not requiring response) to keep connection alive
+                        const notification = {
+                            jsonrpc: '2.0',
+                            method: 'notification/heartbeat',
+                            params: {
+                                timestamp: Date.now(),
+                                status: 'alive'
+                            }
+                        };
+                        console.log(JSON.stringify(notification));
+                    } else {
+                        // Stop heartbeat if stdout is not writable
+                        clearInterval(this.heartbeatInterval);
+                        this.heartbeatInterval = null;
+                        this.isConnected = false;
+                    }
                     
                     // Check for timeout
                     if (Date.now() - this.lastActivity > this.connectionTimeout) {
@@ -124,6 +137,9 @@ class JaxonOptimizelyDxpMcp {
             case 'notification/heartbeat':
                 // Heartbeat notifications don't require a response
                 return null;
+            case 'shutdown':
+                this.shutdown();
+                return { jsonrpc: '2.0', id: request.id, result: { status: 'shutting_down' } };
             default:
                 return ResponseBuilder.methodNotFound(request.id, request.method);
         }
@@ -146,6 +162,11 @@ class JaxonOptimizelyDxpMcp {
         // Mark as connected when initialized
         this.isConnected = true;
         this.lastActivity = Date.now();
+        
+        // Start heartbeat monitoring only after successful initialization
+        if (!this.heartbeatInterval) {
+            this.startConnectionMonitoring();
+        }
         
         return {
             jsonrpc: '2.0',
