@@ -5,6 +5,10 @@
 
 A **PowerShell-based Model Context Protocol (MCP) server** for Optimizely DXP deployment operations, built by [Jaxon Digital](https://www.jaxondigital.com) - your trusted **Optimizely Gold Partner**.
 
+## 🎉 Version 1.2 - SDK-Based Implementation
+
+**New in v1.2:** Built with the official `@modelcontextprotocol/sdk` for full compatibility with Claude Desktop and other MCP clients.
+
 ## 🚀 About This Project
 
 As an **Optimizely Gold Partner**, Jaxon Digital is committed to giving back to the Optimizely community. This MCP server demonstrates our expertise in:
@@ -31,9 +35,17 @@ This MCP server uses a **PowerShell-only approach** because:
 - ✅ PowerShell provides better error handling and structured responses
 - ✅ Official Optimizely support through the EpiCloud module
 
-## ⚠️ Known Issues
+## ✅ Compatibility
 
-**Claude Code Connection**: Some users may see "Failed to connect" in Claude Code even though the server is working correctly. This is a known Claude Code platform issue, not a problem with the MCP server. The server implementation has been verified to work correctly when tested directly.
+- **Claude Desktop**: ✅ Full support with v1.2
+- **Claude Code CLI**: ✅ Full support with v1.2
+- **Other MCP Clients**: ✅ Compatible with any standard MCP client
+
+### Migration from v1.x
+If you're upgrading from v1.x, simply reinstall the package:
+```bash
+npm install -g jaxon-optimizely-dxp-mcp@latest
+```
 
 ## 📋 Prerequisites
 
