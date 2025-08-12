@@ -282,6 +282,34 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         console.error(`Using project: ${validatedArgs.projectId}`);
     }
     
+    // Check for missing credentials (except for get_server_info)
+    if (toolName !== 'get_server_info') {
+        const missingCreds = [];
+        if (!validatedArgs.projectId) missingCreds.push('Project ID');
+        if (!validatedArgs.apiKey) missingCreds.push('API Key');
+        if (!validatedArgs.apiSecret) missingCreds.push('API Secret');
+        
+        if (missingCreds.length > 0) {
+            return {
+                content: [{
+                    type: 'text',
+                    text: `❌ **Missing Required Credentials**\n\n` +
+                          `The following credentials are required but not provided:\n` +
+                          missingCreds.map(c => `• ${c}`).join('\n') + `\n\n` +
+                          `**How to fix this:**\n\n` +
+                          `**Option 1:** Pass the credentials as parameters to this tool:\n` +
+                          `• projectId: "your-project-id"\n` +
+                          `• apiKey: "your-api-key"\n` +
+                          `• apiSecret: "your-api-secret"\n\n` +
+                          `**Option 2:** Configure environment variables in Claude Desktop:\n` +
+                          `Run the \`get_server_info\` tool for detailed setup instructions.\n\n` +
+                          `💡 **Tip:** Use \`get_server_info\` to check your current configuration.`
+                }],
+                isError: true
+            };
+        }
+    }
+    
     // Execute tool
     try {
         let result;
@@ -289,24 +317,58 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         switch (toolName) {
             // Server info
             case 'get_server_info':
-                const projectId = process.env.OPTIMIZELY_PROJECT_ID || 'Not configured';
+                const projectId = process.env.OPTIMIZELY_PROJECT_ID;
                 const hasApiKey = !!process.env.OPTIMIZELY_API_KEY;
                 const hasApiSecret = !!process.env.OPTIMIZELY_API_SECRET;
+                const isConfigured = projectId && hasApiKey && hasApiSecret;
+                
+                let infoText = `📊 **Jaxon Optimizely DXP MCP Server v1.2.9**\n\n`;
+                
+                if (isConfigured) {
+                    infoText += `✅ **Server is fully configured and ready!**\n\n` +
+                               `**Current Configuration:**\n` +
+                               `• Project ID: \`${projectId}\`\n` +
+                               `• API Key: ✅ Configured\n` +
+                               `• API Secret: ✅ Configured\n\n` +
+                               `**Notes:**\n` +
+                               `• All tools automatically use these credentials\n` +
+                               `• You can override by passing different credentials as parameters\n`;
+                } else {
+                    infoText += `⚠️ **Configuration Required**\n\n` +
+                               `**Current Status:**\n` +
+                               `• Project ID: ${projectId ? `\`${projectId}\`` : '❌ Not configured'}\n` +
+                               `• API Key: ${hasApiKey ? '✅ Configured' : '❌ Not configured'}\n` +
+                               `• API Secret: ${hasApiSecret ? '✅ Configured' : '❌ Not configured'}\n\n`;
+                    
+                    if (!projectId || !hasApiKey || !hasApiSecret) {
+                        infoText += `**To configure, you have two options:**\n\n` +
+                                   `**Option 1: Pass credentials with each tool call**\n` +
+                                   `When using any tool, provide:\n` +
+                                   `• projectId: "your-project-id"\n` +
+                                   `• apiKey: "your-api-key"\n` +
+                                   `• apiSecret: "your-api-secret"\n\n` +
+                                   `**Option 2: Configure environment variables (recommended)**\n` +
+                                   `Edit your Claude Desktop config at:\n` +
+                                   `\`~/Library/Application Support/Claude/claude_desktop_config.json\`\n\n` +
+                                   `Add under the jaxon-optimizely-dxp section:\n` +
+                                   `\`\`\`json\n` +
+                                   `"env": {\n` +
+                                   `  "OPTIMIZELY_PROJECT_ID": "your-project-id",\n` +
+                                   `  "OPTIMIZELY_API_KEY": "your-api-key",\n` +
+                                   `  "OPTIMIZELY_API_SECRET": "your-api-secret"\n` +
+                                   `}\n` +
+                                   `\`\`\`\n\n` +
+                                   `Then restart Claude Desktop.\n`;
+                    }
+                }
+                
+                infoText += `\nBuilt by Jaxon Digital - Optimizely Gold Partner`;
                 
                 result = {
                     result: {
                         content: [{
                             type: 'text',
-                            text: `📊 **Jaxon Optimizely DXP MCP Server v1.2.8**\n\n` +
-                                  `**Current Configuration:**\n` +
-                                  `• Project ID: \`${projectId}\`\n` +
-                                  `• API Key: ${hasApiKey ? '✅ Configured' : '❌ Not configured'}\n` +
-                                  `• API Secret: ${hasApiSecret ? '✅ Configured' : '❌ Not configured'}\n\n` +
-                                  `**Notes:**\n` +
-                                  `• All tools automatically use the configured project ID\n` +
-                                  `• You can override credentials by passing them as parameters\n` +
-                                  `• Configuration is loaded from environment variables\n\n` +
-                                  `Built by Jaxon Digital - Optimizely Gold Partner`
+                            text: infoText
                         }]
                     }
                 };
