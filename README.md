@@ -7,8 +7,9 @@ Manage your Optimizely DXP deployments through AI assistants! This MCP (Model Co
 
 Built by [Jaxon Digital](https://www.jaxondigital.com) - your trusted **Optimizely Gold Partner** and **AI Solutions Expert**.
 
-## 🎉 What's New in v1.2.17
+## 🎉 What's New in v1.2.18
 
+- ⚠️ **Edge Logs Beta Notation** - Clearly marked as beta feature requiring enablement
 - 🧠 **Smart Deployment Defaults** - Automatically detects deployment type based on direction:
   - **Upward** (Int→Pre, Pre→Prod): Deploys CODE
   - **Downward** (Prod→Pre/Int): Copies CONTENT (BLOBs + Database)
@@ -180,7 +181,7 @@ Your AI assistant can help you with all these tasks:
 - Generate secure links to access storage
 
 ### Monitoring
-- View application logs (Note: Edge logs require enablement by Optimizely support)
+- View edge/CDN logs (⚠️ BETA: Requires enablement by Optimizely support)
 - Check deployment status
 - Monitor operations progress
 
@@ -202,7 +203,12 @@ Open PowerShell and run: `Install-Module EpiCloud -Force`
 Ask your AI to "check server configuration" for setup instructions
 
 ### "Edge logs - Invalid Operation State"
-Edge/CDN logs must be enabled at the project level by Optimizely support. This is not a bug but a configuration requirement. Contact Optimizely to enable Cloudflare log push for your environments.
+Edge/CDN logs are a **BETA feature** that must be enabled at the project level by Optimizely support. This is not a bug but a configuration requirement. 
+
+To enable:
+1. Contact Optimizely support
+2. Request Cloudflare log push activation (mention it's a beta feature)
+3. Not all projects may be eligible during the beta period
 
 ### AI doesn't show the MCP tools
 1. Check your config file is valid JSON (for Claude Desktop)
