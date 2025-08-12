@@ -7,18 +7,21 @@ Manage your Optimizely DXP deployments through AI assistants! This MCP (Model Co
 
 Built by [Jaxon Digital](https://www.jaxondigital.com) - your trusted **Optimizely Gold Partner** and **AI Solutions Expert**.
 
-## 🎉 What's New in v1.2.19
+## 🎉 What's New in v1.2.20
 
-- 🔧 **Fixed Edge Logs Command** - Corrected PowerShell syntax (no Environment parameter needed)
-- ⚠️ **Edge Logs Beta Notation** - Clearly marked as beta feature requiring enablement
-- 🧠 **Smart Deployment Defaults** - Automatically detects deployment type based on direction:
+### 🌟 Major Feature: Multi-Project Support!
+- **Manage Multiple Projects** - Switch between projects seamlessly in conversations
+- **Project Overrides** - Pass projectId, apiKey, apiSecret to any command
+- **Named Projects** - Configure friendly names for your projects
+- **Environment Access Control** - Limit which environments each project can access
+
+### 🔧 Additional Improvements
+- **Fixed Edge Logs** - Removed environment parameter (applies to entire project)
+- **Smart Deployment Defaults** - Automatically detects deployment type based on direction:
   - **Upward** (Int→Pre, Pre→Prod): Deploys CODE
   - **Downward** (Prod→Pre/Int): Copies CONTENT (BLOBs + Database)
-- 🚫 **Deployment Path Validation** - Prevents direct code deployment from Integration to Production
-- 🚀 **FIXED: Environment Deployments** - Properly includes SourceApp parameter for code deployments
-- 📦 **Flexible Control** - Override smart defaults with deploymentType: "code", "content", or "all"
-- 🔧 **Commerce Support** - Specify sourceApps: ["cms", "commerce"] for Commerce projects
-- 🎯 **Best Practices Built-in** - Follows Optimizely DXP deployment patterns automatically
+- **Deployment Path Validation** - Prevents direct code deployment from Integration to Production
+- **Commerce Support** - Specify sourceApps: ["cms", "commerce"] for Commerce projects
 
 ## 🤖 Compatible AI Assistants
 
@@ -77,6 +80,11 @@ Install from npm in just one command:
 ```
 npm install -g jaxon-optimizely-dxp-mcp
 ```
+
+### 📚 Advanced Configuration
+- **[Multi-Project Setup Guide](MULTI_PROJECT_CONFIG.md)** - Manage multiple Optimizely projects
+- **Multiple Environments** - Control access per project
+- **Named Projects** - Use friendly names instead of GUIDs
 
 ## 🔧 Setup Instructions
 
@@ -144,21 +152,26 @@ Consult your MCP client's documentation for specific configuration instructions.
 
 ## 💡 How to Use
 
-### When Credentials Are Saved
+### Single Project (Default)
 Just ask your AI naturally:
 - "List my recent deployments"
 - "Deploy Integration to Preproduction"
 - "Export the Production database"
 
-### When Credentials Aren't Saved
-Your AI will ask for them when needed, or you can provide them:
-- "List deployments for project abc-123 using my credentials (key: xxx, secret: yyy)"
+### Multiple Projects (New!)
+Switch between projects seamlessly:
+- "List deployments for project abc-123"
+- "Deploy on development project"
+- "Copy content on production project"
+
+You can override credentials anytime:
+- "Deploy using project: xyz, key: aaa, secret: bbb"
 
 ### Check Your Configuration
 Ask your AI anytime:
 - "What project am I using?"
 - "Check my Optimizely configuration"
-- "Are my credentials set up?"
+- "Show me all configured projects"
 
 ## 🛠️ Available Operations
 

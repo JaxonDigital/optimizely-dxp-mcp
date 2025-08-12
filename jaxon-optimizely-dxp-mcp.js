@@ -215,7 +215,7 @@ const toolDefinitions = [
     },
     {
         name: 'get_edge_logs',
-        description: 'Get edge/CDN logs (BETA - requires enablement by Optimizely support)',
+        description: 'Get edge/CDN logs for entire project (BETA - requires enablement by Optimizely support)',
         inputSchema: schemas.get_edge_logs
     },
     {
@@ -328,7 +328,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                 const hasApiSecret = !!process.env.OPTIMIZELY_API_SECRET;
                 const isConfigured = projectId && hasApiKey && hasApiSecret;
                 
-                let infoText = `📊 **Jaxon Optimizely DXP MCP Server v1.2.19**\n\n`;
+                let infoText = `📊 **Jaxon Optimizely DXP MCP Server v1.2.20**\n\n`;
                 
                 if (isConfigured) {
                     infoText += `✅ **Server is fully configured and ready!**\n\n` +
