@@ -43,6 +43,8 @@ const schemas = {
     check_export_status: z.object({
         exportId: z.string(),
         projectId: z.string(),
+        environment: z.enum(['Integration', 'Preproduction', 'Production']),
+        databaseName: z.enum(['epicms', 'epicommerce']),
         apiKey: z.string().optional(),
         apiSecret: z.string().optional()
     }),
@@ -201,7 +203,7 @@ const toolDefinitions = [
 const server = new Server(
     {
         name: Config.PROJECT.NAME,
-        version: '1.2.0' // SDK version
+        version: '1.2.1' // SDK version
     },
     {
         capabilities: {
