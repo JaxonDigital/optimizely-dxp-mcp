@@ -3,97 +3,83 @@
 [![npm version](https://badge.fury.io/js/jaxon-optimizely-dxp-mcp.svg)](https://badge.fury.io/js/jaxon-optimizely-dxp-mcp)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-A **PowerShell-based Model Context Protocol (MCP) server** for Optimizely DXP deployment operations, built by [Jaxon Digital](https://www.jaxondigital.com) - your trusted **Optimizely Gold Partner**.
+Manage your Optimizely DXP deployments directly from Claude Desktop! This tool lets Claude help you deploy code, export databases, sync content, and manage your DXP environments through simple conversations.
 
-## 🎉 Version 1.2.4 - SDK-Based Implementation
+Built by [Jaxon Digital](https://www.jaxondigital.com) - your trusted **Optimizely Gold Partner**.
 
-**Latest v1.2.4 Updates:**
-- ✅ Added `list_deployments` tool to view all deployments
-- ✅ Fixed credential handling with environment variable support
-- ✅ Fixed SAS link generation for storage containers
-- ✅ Fixed content copy operations between environments
-- ✅ Full compatibility with Claude Desktop and Claude Code CLI
+## 🎉 What's New in v1.2.9
 
-## 🚀 About This Project
+- ✅ **Simplified Setup** - Credentials are now optional and can be configured later
+- ✅ **Better Guidance** - Clear instructions when credentials aren't configured
+- ✅ **Smart Detection** - Claude tells you exactly which project you're working with
+- ✅ **Flexible Options** - Use with or without saved credentials
 
-As an **Optimizely Gold Partner**, Jaxon Digital is committed to giving back to the Optimizely community. This MCP server demonstrates our expertise in:
-- **AI-powered development tools** 
-- **Optimizely DXP deployment automation**
-- **PowerShell-based enterprise solutions**
-- **Modern development workflows**
+## 🚀 What Can Claude Do For You?
 
-## ✨ Key Features
+Just ask Claude to help with tasks like:
+- "Deploy my code from Integration to Production"
+- "Export the Production database for backup"
+- "Copy content from Production to Preproduction"
+- "Show me recent deployments"
+- "Generate a storage link for the media container"
+- "Check the status of my deployment"
 
-- 🔄 **Complete Deployment Lifecycle**: Upload → Deploy → Complete → Reset
-- 🗄️ **Database Operations**: Export databases as BACPAC files
-- 📦 **Content Synchronization**: Sync databases and BLOBs between environments
-- 🔗 **Storage Management**: Generate SAS links for BLOB containers
-- ⚡ **PowerShell-Only Architecture**: More reliable than direct API calls
-- 🛡️ **Enterprise-Grade Error Handling**: Comprehensive error detection and user guidance
-- 🎯 **MCP Integration**: Seamlessly works with Claude Code and other MCP clients
+No more memorizing PowerShell commands or navigating complex portals!
 
-## 🏗️ Architecture
+## ✨ Key Benefits
 
-This MCP server uses a **PowerShell-only approach** because:
-- ✅ PowerShell cmdlets are more reliable than direct API calls
-- ✅ Direct API calls often return login pages despite correct HMAC authentication  
-- ✅ PowerShell provides better error handling and structured responses
-- ✅ Official Optimizely support through the EpiCloud module
-
-## ✅ Compatibility
-
-- **Claude Desktop**: ✅ Full support with v1.2
-- **Claude Code CLI**: ✅ Full support with v1.2
-- **Other MCP Clients**: ✅ Compatible with any standard MCP client
-
-### Migration from v1.x
-If you're upgrading from v1.x, simply reinstall the package:
-```bash
-npm install -g jaxon-optimizely-dxp-mcp@latest
-```
+- **Simple Conversations** - Just tell Claude what you need in plain English
+- **Safe Operations** - Claude confirms actions before making changes
+- **Full Control** - Review and approve all operations
+- **Time Saving** - Automate repetitive deployment tasks
+- **Error Prevention** - Claude validates operations before executing
 
 ## 📋 Prerequisites
 
-Before using this MCP server, ensure you have:
+You'll need these installed on your computer:
 
-1. **PowerShell Core (7+)** installed on your system
-   ```bash
-   # macOS
-   brew install powershell
-   
-   # Windows
-   winget install Microsoft.PowerShell
-   
-   # Linux (Ubuntu/Debian)
-   sudo apt update && sudo apt install -y powershell
-   ```
+### 1. PowerShell Core
+- **Mac**: Open Terminal and run: `brew install powershell`
+- **Windows**: Already installed or run: `winget install Microsoft.PowerShell`
+- **Linux**: Run: `sudo apt install -y powershell`
 
-2. **EpiCloud PowerShell Module** installed
-   ```powershell
-   Install-Module EpiCloud -Force
-   ```
+### 2. EpiCloud Module
+Open PowerShell and run:
+```
+Install-Module EpiCloud -Force
+```
 
-3. **Optimizely DXP API credentials** (API Key, API Secret, Project ID)
-   - Obtain from your Optimizely DXP Portal
-   - Ensure credentials have appropriate permissions for deployment operations
+### 3. Your Optimizely Credentials (Optional)
+You can set these up now or later:
+- API Key from your DXP Portal
+- API Secret from your DXP Portal  
+- Your Project ID
 
-## 🚀 Quick Start
+Don't have these yet? No problem! You can still install and Claude will guide you when needed.
 
-### NPM Installation
-```bash
+## 🚀 Quick Installation
+
+Install from npm in just one command:
+```
 npm install -g jaxon-optimizely-dxp-mcp
 ```
 
-### Configuration
+## 🔧 Setup for Claude Desktop
 
-#### Claude Desktop Configuration
+### Step 1: Find Your Config File
 
-Edit your Claude Desktop config file:
-- macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`
-- Windows: `%APPDATA%\Claude\claude_desktop_config.json`
-- Linux: `~/.config/Claude/claude_desktop_config.json`
+The config file location depends on your system:
+- **Mac**: `~/Library/Application Support/Claude/claude_desktop_config.json`
+- **Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
+- **Linux**: `~/.config/Claude/claude_desktop_config.json`
 
-```json
+### Step 2: Add the MCP Server
+
+Open the config file and add this section:
+
+#### Option A: With Saved Credentials (Recommended)
+Add this if you want Claude to automatically use your credentials:
+```
 {
   "mcpServers": {
     "jaxon-optimizely-dxp": {
@@ -108,195 +94,117 @@ Edit your Claude Desktop config file:
 }
 ```
 
-#### Claude Code CLI Configuration
-
-```bash
-# Add the MCP server with environment variables
-claude mcp add jaxon-optimizely-dxp-mcp jaxon-optimizely-dxp-mcp
+#### Option B: Without Saved Credentials
+Add this if you prefer to provide credentials when needed:
 ```
-
-Then set environment variables in your shell:
-```bash
-export OPTIMIZELY_API_KEY="your-api-key-here"
-export OPTIMIZELY_API_SECRET="your-api-secret-here"
-export OPTIMIZELY_PROJECT_ID="your-project-id-here"
-```
-
-#### Alternative: Pass Credentials Per Tool
-
-You can also provide credentials directly when calling each tool:
-```json
 {
   "mcpServers": {
     "jaxon-optimizely-dxp": {
       "command": "jaxon-optimizely-dxp-mcp"
+    }
   }
 }
 ```
 
-### Manual Installation
-```bash
-git clone https://github.com/jaxondigital/jaxon-optimizely-dxp-mcp.git
-cd jaxon-optimizely-dxp-mcp
-npm install
-node jaxon-optimizely-dxp-mcp.js
-```
+### Step 3: Restart Claude Desktop
 
-### Testing the Server
-Use the included interactive client to test functionality:
-```bash
-# Interactive client with menu-driven interface
-node mcp-client.js
+Close and reopen Claude Desktop to load the new configuration.
 
-# Or test individual operations
-node test-storage-interactive.js
-```
+### Step 4: Verify It's Working
 
-**Note**: The server may show as "not connected" in `claude mcp list` but will work correctly. This is a known display issue that doesn't affect functionality.
+Ask Claude: "What MCP tools do you have available?" or "Check your Optimizely configuration"
 
-## 🛠️ Available Tools
+Claude will use the `get_server_info` tool to show you:
+- Whether credentials are configured
+- Which project is active
+- How to set up credentials if needed
 
-### Deployment Management
-- `list_deployments` - List all deployments for the project
-- `upload_deployment_package` - Upload NuGet packages for deployment
-- `start_deployment` - Deploy packages or sync content between environments  
-- `get_deployment_status` - Monitor deployment progress and status
-- `complete_deployment` - Complete deployments (move from staging to live)
-- `reset_deployment` - Reset/rollback deployments
-- `deploy_package_and_start` - Upload and deploy in one operation
+## 💡 How to Use
 
-### Database Operations
-- `export_database` - Export databases as BACPAC files
-- `check_export_status` - Monitor database export progress
-- `copy_content` - Sync databases and BLOBs between environments
+### When Credentials Are Saved
+Just ask Claude naturally:
+- "List my recent deployments"
+- "Deploy Integration to Preproduction"
+- "Export the Production database"
 
-### Storage Management
-- `list_storage_containers` - List available BLOB storage containers
-- `generate_storage_sas_link` - Generate SAS URLs for container access
+### When Credentials Aren't Saved
+Claude will ask for them when needed, or you can provide them:
+- "List deployments for project abc-123 using my credentials (key: xxx, secret: yyy)"
 
-### Logging
-- `get_edge_logs` - Retrieve application and edge logs
+### Check Your Configuration
+Ask Claude anytime:
+- "What project am I using?"
+- "Check my Optimizely configuration"
+- "Are my credentials set up?"
 
-## 📖 Usage Examples
+## 🛠️ Available Operations
 
-### List All Deployments
-```json
-{
-  "name": "list_deployments",
-  "arguments": {
-    "projectId": "your-project-id"
-  }
-}
-```
+Claude can help you with all these tasks:
 
-### Deploy a Package
-```json
-{
-  "name": "start_deployment",
-  "arguments": {
-    "sourceEnvironment": "Integration",
-    "targetEnvironment": "Preproduction",
-    "projectId": "your-project-id"
-  }
-}
-```
+### Deployments
+- View all your deployments and their status
+- Deploy code between environments
+- Complete deployments to go live
+- Roll back deployments if needed
+- Upload new deployment packages
 
-### Copy Content Between Environments
-```json
-{
-  "name": "copy_content", 
-  "arguments": {
-    "projectId": "your-project-id", 
-    "sourceEnvironment": "Production",
-    "targetEnvironment": "Preproduction",
-    "includeBlob": true,
-    "includeDatabase": true
-  }
-}
-```
+### Databases
+- Export databases as backup files
+- Copy databases between environments
+- Check export progress
 
-### Reset a Deployment
-```json
-{
-  "name": "reset_deployment",
-  "arguments": {
-    "apiKey": "your-api-key", 
-    "apiSecret": "your-api-secret",
-    "projectId": "your-project-id",
-    "deploymentId": "deployment-guid",
-    "includeDbRollback": false
-  }
-}
-```
+### Content & Media
+- Copy content between environments
+- Sync media files (BLOBs)
+- Generate secure links to access storage
 
-## 🔧 Environment Support
+### Monitoring
+- View application logs
+- Check deployment status
+- Monitor operations progress
 
-- **Integration** - Development environment for testing
-- **Preproduction** - Staging environment for final validation  
-- **Production** - Live environment
-- **ADE1-ADE6** - Additional development environments
+## 🌍 Supported Environments
+
+- **Integration** - Your development environment
+- **Preproduction** - Testing before going live
+- **Production** - Your live website
 
 ## 🔍 Troubleshooting
 
-### Claude Code Shows "Failed to connect"
-**Known Issue**: When running `claude mcp list`, the server may show as "Failed to connect" even though it's working correctly.
+### "PowerShell not found"
+Make sure PowerShell Core is installed (see Prerequisites above)
 
-**Solution**: This is a false negative. The server is functional despite this message. You can verify it works by:
-1. Testing with the included `mcp-client.js` script
-2. Running: `echo '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{}}' | node jaxon-optimizely-dxp-mcp.js`
+### "EpiCloud module not found"
+Open PowerShell and run: `Install-Module EpiCloud -Force`
 
-The MCP tools will still be available in Claude Code despite the connection warning.
+### "Credentials not configured"
+Ask Claude to "check server configuration" for setup instructions
 
-### PowerShell Module Not Found
-If you see errors about the EpiCloud module:
-```bash
-# Install the module globally
-pwsh -c "Install-Module EpiCloud -Force -Scope AllUsers"
-
-# Or for current user only
-pwsh -c "Install-Module EpiCloud -Force -Scope CurrentUser"
-```
-
-### Permission Errors on macOS/Linux
-```bash
-# Make the script executable
-chmod +x jaxon-optimizely-dxp-mcp.js
-
-# If using global install, might need to reinstall
-npm uninstall -g jaxon-optimizely-dxp-mcp
-npm install -g jaxon-optimizely-dxp-mcp
-```
-
-## 🤝 Contributing
-
-We welcome contributions from the Optimizely community! Please:
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+### Claude Desktop doesn't show the tools
+1. Check your config file is valid JSON
+2. Restart Claude Desktop
+3. Ask Claude "What MCP tools are available?"
 
 ## 🏢 About Jaxon Digital
 
-**Jaxon Digital** is a certified **Optimizely Gold Partner** specializing in:
-- Digital experience platform implementations
-- AI-powered development solutions  
-- Enterprise content management
-- E-commerce platform development
+**Jaxon Digital** is a certified **Optimizely Gold Partner** helping businesses succeed with:
+- Digital experience platforms
+- E-commerce solutions
+- Content management systems
+- Marketing automation
 
-Visit us at [www.jaxondigital.com](https://www.jaxondigital.com) to learn more about our services.
+Visit [www.jaxondigital.com](https://www.jaxondigital.com) to learn more.
 
-## 🆘 Support
+## 🆘 Need Help?
 
-- 📋 **Issues**: [GitHub Issues](https://github.com/jaxondigital/jaxon-optimizely-dxp-mcp/issues)
-- 📧 **Contact**: [support@jaxondigital.com](mailto:support@jaxondigital.com)
+- 📋 **Report Issues**: [GitHub Issues](https://github.com/jaxondigital/jaxon-optimizely-dxp-mcp/issues)
+- 📧 **Email Us**: [support@jaxondigital.com](mailto:support@jaxondigital.com)
 - 🌐 **Website**: [www.jaxondigital.com](https://www.jaxondigital.com)
+
+## 📄 License
+
+MIT License - feel free to use this in your projects!
 
 ---
 
-**Powered by Jaxon Digital** - Your trusted Optimizely Gold Partner 🥇
+**Built with ❤️ by Jaxon Digital** - Your Optimizely Gold Partner 🥇
