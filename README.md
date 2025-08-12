@@ -3,20 +3,29 @@
 [![npm version](https://badge.fury.io/js/jaxon-optimizely-dxp-mcp.svg)](https://badge.fury.io/js/jaxon-optimizely-dxp-mcp)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-Manage your Optimizely DXP deployments directly from Claude Desktop! This tool lets Claude help you deploy code, export databases, sync content, and manage your DXP environments through simple conversations.
+Manage your Optimizely DXP deployments through AI assistants! This MCP (Model Context Protocol) server works with Claude, ChatGPT, or any AI tool that supports MCP. Deploy code, export databases, sync content, and manage your DXP environments through simple conversations.
 
 Built by [Jaxon Digital](https://www.jaxondigital.com) - your trusted **Optimizely Gold Partner**.
 
-## 🎉 What's New in v1.2.9
+## 🎉 What's New in v1.2.11
 
+- ✅ **Universal Compatibility** - Works with any MCP-compatible AI assistant
 - ✅ **Simplified Setup** - Credentials are now optional and can be configured later
 - ✅ **Better Guidance** - Clear instructions when credentials aren't configured
-- ✅ **Smart Detection** - Claude tells you exactly which project you're working with
+- ✅ **Smart Detection** - Shows exactly which project you're working with
 - ✅ **Flexible Options** - Use with or without saved credentials
 
-## 🚀 What Can Claude Do For You?
+## 🤖 Compatible AI Assistants
 
-Just ask Claude to help with tasks like:
+This MCP server works with:
+- **Claude Desktop** - Anthropic's desktop application
+- **Claude Code CLI** - Command-line interface for Claude
+- **ChatGPT** - When configured with MCP support
+- **Any MCP Client** - Any tool that implements the Model Context Protocol
+
+## 🚀 What Can Your AI Assistant Do?
+
+Just ask your AI assistant to help with tasks like:
 - "Deploy my code from Integration to Production"
 - "Export the Production database for backup"
 - "Copy content from Production to Preproduction"
@@ -28,11 +37,11 @@ No more memorizing PowerShell commands or navigating complex portals!
 
 ## ✨ Key Benefits
 
-- **Simple Conversations** - Just tell Claude what you need in plain English
-- **Safe Operations** - Claude confirms actions before making changes
+- **Simple Conversations** - Just tell your AI what you need in plain English
+- **Safe Operations** - AI confirms actions before making changes
 - **Full Control** - Review and approve all operations
 - **Time Saving** - Automate repetitive deployment tasks
-- **Error Prevention** - Claude validates operations before executing
+- **Error Prevention** - Validates operations before executing
 
 ## 📋 Prerequisites
 
@@ -55,7 +64,7 @@ You can set these up now or later:
 - API Secret from your DXP Portal  
 - Your Project ID
 
-Don't have these yet? No problem! You can still install and Claude will guide you when needed.
+Don't have these yet? No problem! You can still install and your AI assistant will guide you when needed.
 
 ## 🚀 Quick Installation
 
@@ -64,21 +73,23 @@ Install from npm in just one command:
 npm install -g jaxon-optimizely-dxp-mcp
 ```
 
-## 🔧 Setup for Claude Desktop
+## 🔧 Setup Instructions
 
-### Step 1: Find Your Config File
+### For Claude Desktop
+
+#### Step 1: Find Your Config File
 
 The config file location depends on your system:
 - **Mac**: `~/Library/Application Support/Claude/claude_desktop_config.json`
 - **Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
 - **Linux**: `~/.config/Claude/claude_desktop_config.json`
 
-### Step 2: Add the MCP Server
+#### Step 2: Add the MCP Server
 
 Open the config file and add this section:
 
-#### Option A: With Saved Credentials (Recommended)
-Add this if you want Claude to automatically use your credentials:
+##### Option A: With Saved Credentials (Recommended)
+Add this if you want to automatically use your credentials:
 ```
 {
   "mcpServers": {
@@ -94,7 +105,7 @@ Add this if you want Claude to automatically use your credentials:
 }
 ```
 
-#### Option B: Without Saved Credentials
+##### Option B: Without Saved Credentials
 Add this if you prefer to provide credentials when needed:
 ```
 {
@@ -106,40 +117,47 @@ Add this if you prefer to provide credentials when needed:
 }
 ```
 
-### Step 3: Restart Claude Desktop
+#### Step 3: Restart Claude Desktop
 
 Close and reopen Claude Desktop to load the new configuration.
 
-### Step 4: Verify It's Working
+#### Step 4: Verify It's Working
 
-Ask Claude: "What MCP tools do you have available?" or "Check your Optimizely configuration"
+Ask: "What MCP tools do you have available?" or "Check your Optimizely configuration"
 
-Claude will use the `get_server_info` tool to show you:
-- Whether credentials are configured
-- Which project is active
-- How to set up credentials if needed
+### For Other MCP Clients
+
+The MCP server can be used with any client that supports the Model Context Protocol. The basic configuration requires:
+
+1. **Command**: `jaxon-optimizely-dxp-mcp` (after npm global install)
+2. **Environment Variables** (optional):
+   - `OPTIMIZELY_API_KEY`: Your API key
+   - `OPTIMIZELY_API_SECRET`: Your API secret
+   - `OPTIMIZELY_PROJECT_ID`: Your project ID
+
+Consult your MCP client's documentation for specific configuration instructions. The server follows standard MCP protocols and will work with any compliant client.
 
 ## 💡 How to Use
 
 ### When Credentials Are Saved
-Just ask Claude naturally:
+Just ask your AI naturally:
 - "List my recent deployments"
 - "Deploy Integration to Preproduction"
 - "Export the Production database"
 
 ### When Credentials Aren't Saved
-Claude will ask for them when needed, or you can provide them:
+Your AI will ask for them when needed, or you can provide them:
 - "List deployments for project abc-123 using my credentials (key: xxx, secret: yyy)"
 
 ### Check Your Configuration
-Ask Claude anytime:
+Ask your AI anytime:
 - "What project am I using?"
 - "Check my Optimizely configuration"
 - "Are my credentials set up?"
 
 ## 🛠️ Available Operations
 
-Claude can help you with all these tasks:
+Your AI assistant can help you with all these tasks:
 
 ### Deployments
 - View all your deployments and their status
@@ -178,12 +196,13 @@ Make sure PowerShell Core is installed (see Prerequisites above)
 Open PowerShell and run: `Install-Module EpiCloud -Force`
 
 ### "Credentials not configured"
-Ask Claude to "check server configuration" for setup instructions
+Ask your AI to "check server configuration" for setup instructions
 
-### Claude Desktop doesn't show the tools
-1. Check your config file is valid JSON
-2. Restart Claude Desktop
-3. Ask Claude "What MCP tools are available?"
+### AI doesn't show the MCP tools
+1. Check your config file is valid JSON (for Claude Desktop)
+2. Restart your MCP client
+3. Ask "What MCP tools are available?"
+4. Verify your client supports MCP protocol
 
 ## 🏢 About Jaxon Digital
 
