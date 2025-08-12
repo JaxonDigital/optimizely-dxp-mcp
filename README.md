@@ -7,14 +7,14 @@ Manage your Optimizely DXP deployments through AI assistants! This MCP (Model Co
 
 Built by [Jaxon Digital](https://www.jaxondigital.com) - your trusted **Optimizely Gold Partner** and **AI Solutions Expert**.
 
-## 🎉 What's New in v1.2.14
+## 🎉 What's New in v1.2.15
 
-- 🐛 **Fixed Start Deployment** - Resolved issue with environment-to-environment deployments
+- 🐛 **Fixed Deployment Type Detection** - Properly handles environment-to-environment vs package deployments
+- 🎯 **Explicit Deployment Control** - New deploymentType parameter: "code", "content", or "all"
+- 📊 **Better Error Messages** - Clear feedback when deployment configuration is invalid
+- 🔍 **Enhanced Debugging** - Improved logging to diagnose deployment issues
 - ✅ **Universal Compatibility** - Works with any MCP-compatible AI assistant
 - ✅ **Simplified Setup** - Credentials are now optional and can be configured later
-- ✅ **Better Guidance** - Clear instructions when credentials aren't configured
-- ✅ **Smart Detection** - Shows exactly which project you're working with
-- ✅ **Flexible Options** - Use with or without saved credentials
 
 ## 🤖 Compatible AI Assistants
 

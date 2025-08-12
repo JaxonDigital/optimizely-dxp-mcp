@@ -63,6 +63,11 @@ const schemas = {
     start_deployment: z.object({
         sourceEnvironment: z.enum(['Integration', 'Preproduction', 'Production']),
         targetEnvironment: z.enum(['Integration', 'Preproduction', 'Production']),
+        deploymentType: z.enum(['code', 'content', 'all']).optional().default('code'),
+        includeBlob: z.boolean().optional(),
+        includeDatabase: z.boolean().optional(),
+        directDeploy: z.boolean().optional().default(false),
+        useMaintenancePage: z.boolean().optional().default(false),
         projectId: z.string().optional(),
         apiKey: z.string().optional(),
         apiSecret: z.string().optional()
@@ -169,7 +174,7 @@ const toolDefinitions = [
     },
     {
         name: 'start_deployment',
-        description: 'Start a deployment to specified environment (uses configured project)',
+        description: 'Start a deployment to specified environment. deploymentType: "code" (default) deploys code only, "content" deploys blobs+database, "all" deploys everything',
         inputSchema: schemas.start_deployment
     },
     {
@@ -322,7 +327,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                 const hasApiSecret = !!process.env.OPTIMIZELY_API_SECRET;
                 const isConfigured = projectId && hasApiKey && hasApiSecret;
                 
-                let infoText = `📊 **Jaxon Optimizely DXP MCP Server v1.2.14**\n\n`;
+                let infoText = `📊 **Jaxon Optimizely DXP MCP Server v1.2.15**\n\n`;
                 
                 if (isConfigured) {
                     infoText += `✅ **Server is fully configured and ready!**\n\n` +
