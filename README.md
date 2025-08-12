@@ -7,8 +7,9 @@ Manage your Optimizely DXP deployments through AI assistants! This MCP (Model Co
 
 Built by [Jaxon Digital](https://www.jaxondigital.com) - your trusted **Optimizely Gold Partner** and **AI Solutions Expert**.
 
-## 🎉 What's New in v1.2.18
+## 🎉 What's New in v1.2.19
 
+- 🔧 **Fixed Edge Logs Command** - Corrected PowerShell syntax (no Environment parameter needed)
 - ⚠️ **Edge Logs Beta Notation** - Clearly marked as beta feature requiring enablement
 - 🧠 **Smart Deployment Defaults** - Automatically detects deployment type based on direction:
   - **Upward** (Int→Pre, Pre→Prod): Deploys CODE

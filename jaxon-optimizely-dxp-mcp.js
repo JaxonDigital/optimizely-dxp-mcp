@@ -134,7 +134,7 @@ const schemas = {
     
     // Logging operations
     get_edge_logs: z.object({
-        environment: z.enum(['Integration', 'Preproduction', 'Production']),
+        environment: z.enum(['Integration', 'Preproduction', 'Production']).optional(), // Not used by API, kept for compatibility
         projectId: z.string().optional(),
         hours: z.number().optional().default(1),
         apiKey: z.string().optional(),
@@ -328,7 +328,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                 const hasApiSecret = !!process.env.OPTIMIZELY_API_SECRET;
                 const isConfigured = projectId && hasApiKey && hasApiSecret;
                 
-                let infoText = `📊 **Jaxon Optimizely DXP MCP Server v1.2.18**\n\n`;
+                let infoText = `📊 **Jaxon Optimizely DXP MCP Server v1.2.19**\n\n`;
                 
                 if (isConfigured) {
                     infoText += `✅ **Server is fully configured and ready!**\n\n` +
