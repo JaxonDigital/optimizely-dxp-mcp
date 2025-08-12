@@ -36,14 +36,14 @@ const schemas = {
     export_database: z.object({
         environment: z.enum(['Integration', 'Preproduction', 'Production']),
         databaseName: z.enum(['epicms', 'epicommerce']),
-        projectId: z.string(),
+        projectId: z.string().optional(),
         apiKey: z.string().optional(),
         apiSecret: z.string().optional()
     }),
     
     check_export_status: z.object({
         exportId: z.string(),
-        projectId: z.string(),
+        projectId: z.string().optional(),
         environment: z.enum(['Integration', 'Preproduction', 'Production']),
         databaseName: z.enum(['epicms', 'epicommerce']),
         apiKey: z.string().optional(),
@@ -52,7 +52,7 @@ const schemas = {
     
     // Deployment operations
     list_deployments: z.object({
-        projectId: z.string(),
+        projectId: z.string().optional(),
         apiKey: z.string().optional(),
         apiSecret: z.string().optional()
     }),
@@ -60,28 +60,28 @@ const schemas = {
     start_deployment: z.object({
         sourceEnvironment: z.enum(['Integration', 'Preproduction', 'Production']),
         targetEnvironment: z.enum(['Integration', 'Preproduction', 'Production']),
-        projectId: z.string(),
+        projectId: z.string().optional(),
         apiKey: z.string().optional(),
         apiSecret: z.string().optional()
     }),
     
     get_deployment_status: z.object({
         deploymentId: z.string(),
-        projectId: z.string(),
+        projectId: z.string().optional(),
         apiKey: z.string().optional(),
         apiSecret: z.string().optional()
     }),
     
     complete_deployment: z.object({
         deploymentId: z.string(),
-        projectId: z.string(),
+        projectId: z.string().optional(),
         apiKey: z.string().optional(),
         apiSecret: z.string().optional()
     }),
     
     reset_deployment: z.object({
         deploymentId: z.string(),
-        projectId: z.string(),
+        projectId: z.string().optional(),
         apiKey: z.string().optional(),
         apiSecret: z.string().optional()
     }),
@@ -89,7 +89,7 @@ const schemas = {
     // Storage operations
     list_storage_containers: z.object({
         environment: z.enum(['Integration', 'Preproduction', 'Production']),
-        projectId: z.string(),
+        projectId: z.string().optional(),
         apiKey: z.string().optional(),
         apiSecret: z.string().optional()
     }),
@@ -97,7 +97,7 @@ const schemas = {
     generate_storage_sas_link: z.object({
         environment: z.enum(['Integration', 'Preproduction', 'Production']),
         containerName: z.string(),
-        projectId: z.string(),
+        projectId: z.string().optional(),
         permissions: z.enum(['Read', 'Write', 'Delete', 'List']).optional().default('Read'),
         expiryHours: z.number().optional().default(24),
         apiKey: z.string().optional(),
@@ -108,7 +108,7 @@ const schemas = {
     upload_deployment_package: z.object({
         environment: z.enum(['Integration', 'Preproduction', 'Production']),
         packagePath: z.string(),
-        projectId: z.string(),
+        projectId: z.string().optional(),
         apiKey: z.string().optional(),
         apiSecret: z.string().optional()
     }),
@@ -117,7 +117,7 @@ const schemas = {
         sourceEnvironment: z.enum(['Integration', 'Preproduction', 'Production']),
         targetEnvironment: z.enum(['Integration', 'Preproduction', 'Production']),
         packagePath: z.string(),
-        projectId: z.string(),
+        projectId: z.string().optional(),
         directDeploy: z.boolean().optional().default(true),
         apiKey: z.string().optional(),
         apiSecret: z.string().optional()
@@ -126,7 +126,7 @@ const schemas = {
     // Logging operations
     get_edge_logs: z.object({
         environment: z.enum(['Integration', 'Preproduction', 'Production']),
-        projectId: z.string(),
+        projectId: z.string().optional(),
         hours: z.number().optional().default(1),
         apiKey: z.string().optional(),
         apiSecret: z.string().optional()
@@ -136,7 +136,7 @@ const schemas = {
     copy_content: z.object({
         sourceEnvironment: z.enum(['Integration', 'Preproduction', 'Production']),
         targetEnvironment: z.enum(['Integration', 'Preproduction', 'Production']),
-        projectId: z.string(),
+        projectId: z.string().optional(),
         apiKey: z.string().optional(),
         apiSecret: z.string().optional()
     })
@@ -259,13 +259,13 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     }
     
     // Inject environment credentials if not provided
-    if (!validatedArgs.apiKey && process.env.OPTIMIZELY_API_KEY) {
+    if (!validatedArgs.apiKey) {
         validatedArgs.apiKey = process.env.OPTIMIZELY_API_KEY;
     }
-    if (!validatedArgs.apiSecret && process.env.OPTIMIZELY_API_SECRET) {
+    if (!validatedArgs.apiSecret) {
         validatedArgs.apiSecret = process.env.OPTIMIZELY_API_SECRET;
     }
-    if (!validatedArgs.projectId && process.env.OPTIMIZELY_PROJECT_ID) {
+    if (!validatedArgs.projectId) {
         validatedArgs.projectId = process.env.OPTIMIZELY_PROJECT_ID;
     }
     

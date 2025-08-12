@@ -1,6 +1,6 @@
 {
   "name": "jaxon-optimizely-dxp-mcp",
-  "version": "1.2.6",
+  "version": "1.2.7",
   "description": "Jaxon Digital's MCP server for Optimizely DXP deployment operations using PowerShell - SDK version for full Claude compatibility",
   "main": "jaxon-optimizely-dxp-mcp.js",
   "bin": {
