@@ -57,3 +57,18 @@ build/
 *.log
 logs/*.nupkg
 .claude/
+
+# Development and test files
+test-env-vars.js
+jaxon-mcp-wrapper.sh
+jaxon-optimizely-dxp-mcp-clean.js
+CLAUDE.md
+INSTALL.md
+MCP_CLIENT_CONFIG.md
+mcp-client.js
+quick-test.sh
+setup-claude-config.sh
+*-wrapper.sh
+*-clean.js
+test-*.js
+test-*.sh
