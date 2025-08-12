@@ -7,8 +7,9 @@ Manage your Optimizely DXP deployments through AI assistants! This MCP (Model Co
 
 Built by [Jaxon Digital](https://www.jaxondigital.com) - your trusted **Optimizely Gold Partner** and **AI Solutions Expert**.
 
-## 🎉 What's New in v1.2.13
+## 🎉 What's New in v1.2.14
 
+- 🐛 **Fixed Start Deployment** - Resolved issue with environment-to-environment deployments
 - ✅ **Universal Compatibility** - Works with any MCP-compatible AI assistant
 - ✅ **Simplified Setup** - Credentials are now optional and can be configured later
 - ✅ **Better Guidance** - Clear instructions when credentials aren't configured
@@ -177,7 +178,7 @@ Your AI assistant can help you with all these tasks:
 - Generate secure links to access storage
 
 ### Monitoring
-- View application logs
+- View application logs (Note: Edge logs require enablement by Optimizely support)
 - Check deployment status
 - Monitor operations progress
 
@@ -197,6 +198,9 @@ Open PowerShell and run: `Install-Module EpiCloud -Force`
 
 ### "Credentials not configured"
 Ask your AI to "check server configuration" for setup instructions
+
+### "Edge logs - Invalid Operation State"
+Edge/CDN logs must be enabled at the project level by Optimizely support. This is not a bug but a configuration requirement. Contact Optimizely to enable Cloudflare log push for your environments.
 
 ### AI doesn't show the MCP tools
 1. Check your config file is valid JSON (for Claude Desktop)
