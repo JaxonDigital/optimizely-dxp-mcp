@@ -7,7 +7,7 @@ Manage your Optimizely DXP deployments through AI assistants! This MCP (Model Co
 
 Built by [Jaxon Digital](https://www.jaxondigital.com) - your trusted **Optimizely Gold Partner** and **AI Solutions Expert**.
 
-## 🎉 What's New in v1.2.26
+## 🎉 What's New
 
 ### 🎨 Enhanced User Experience
 - **Project-Centric Interface** - Changed from "server info" to "project info" with project name prominently displayed

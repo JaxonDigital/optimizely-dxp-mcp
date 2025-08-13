@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
 /**
- * Jaxon Digital Optimizely DXP MCP Server - v1.4.0
- * Built with official @modelcontextprotocol/sdk for full Claude compatibility
+ * Jaxon Digital Optimizely DXP MCP Server
+ * Built with official @modelcontextprotocol for full Claude compatibility
  * 
  * Built by Jaxon Digital - Optimizely Gold Partner
  * https://www.jaxondigital.com
@@ -296,7 +296,7 @@ const toolDefinitions = Object.keys(schemas).map(name => {
 const server = new Server(
     {
         name: Config.PROJECT.NAME,
-        version: '1.4.0'
+        version: require('./package.json').version
     },
     {
         capabilities: {
@@ -435,7 +435,7 @@ async function main() {
     await server.connect(transport);
     
     // Log to stderr to avoid polluting stdout
-    console.error('Jaxon Optimizely DXP MCP Server v1.2 (SDK) started');
+    console.error('Jaxon Optimizely DXP MCP Server started');
 }
 
 // Handle errors
