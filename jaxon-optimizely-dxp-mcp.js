@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * Jaxon Digital Optimizely DXP MCP Server - v1.2.4
+ * Jaxon Digital Optimizely DXP MCP Server - v1.3.0
  * Built with official @modelcontextprotocol/sdk for full Claude compatibility
  * 
  * Built by Jaxon Digital - Optimizely Gold Partner
@@ -20,7 +20,7 @@ const path = require('path');
 
 // Import existing modules
 const libPath = path.join(__dirname, 'lib');
-const { Config } = require(libPath);
+const Config = require(path.join(libPath, 'config'));
 const { 
     DatabaseTools, 
     DeploymentTools, 
@@ -63,7 +63,7 @@ const schemas = {
     start_deployment: z.object({
         sourceEnvironment: z.enum(['Integration', 'Preproduction', 'Production']),
         targetEnvironment: z.enum(['Integration', 'Preproduction', 'Production']),
-        deploymentType: z.enum(['code', 'content', 'all']).optional(), // Smart defaults based on direction
+        deploymentType: z.enum(['code', 'content', 'all']).optional(),
         sourceApps: z.array(z.string()).optional(),
         includeBlob: z.boolean().optional(),
         includeDatabase: z.boolean().optional(),
@@ -134,7 +134,7 @@ const schemas = {
     
     // Logging operations
     get_edge_logs: z.object({
-        environment: z.enum(['Integration', 'Preproduction', 'Production']).optional(), // Not used by API, kept for compatibility
+        environment: z.enum(['Integration', 'Preproduction', 'Production']).optional(),
         projectId: z.string().optional(),
         hours: z.number().optional().default(1),
         apiKey: z.string().optional(),
@@ -151,85 +151,120 @@ const schemas = {
     })
 };
 
-// Tool definitions
-const toolDefinitions = [
-    {
-        name: 'get_project_info',
-        description: 'Get current Optimizely project name and configuration details',
-        inputSchema: schemas.get_project_info
-    },
-    {
-        name: 'export_database',
-        description: 'Export database from an Optimizely DXP environment (uses configured project)',
-        inputSchema: schemas.export_database
-    },
-    {
-        name: 'check_export_status',
-        description: 'Check the status of a database export',
-        inputSchema: schemas.check_export_status
-    },
-    {
-        name: 'list_deployments',
-        description: 'List all deployments for the configured project',
-        inputSchema: schemas.list_deployments
-    },
-    {
-        name: 'start_deployment',
-        description: 'Start deployment between environments. Smart defaults: Upward (Int→Pre, Pre→Prod) deploys CODE; Downward (Prod→Pre/Int) copies CONTENT. Override with deploymentType: "code", "content", or "all". Commerce: set sourceApps: ["cms", "commerce"]',
-        inputSchema: schemas.start_deployment
-    },
-    {
-        name: 'get_deployment_status',
-        description: 'Get the status of a deployment',
-        inputSchema: schemas.get_deployment_status
-    },
-    {
-        name: 'complete_deployment',
-        description: 'Complete a deployment that is in Verification state',
-        inputSchema: schemas.complete_deployment
-    },
-    {
-        name: 'reset_deployment',
-        description: 'Reset/rollback a deployment',
-        inputSchema: schemas.reset_deployment
-    },
-    {
-        name: 'list_storage_containers',
-        description: 'List storage containers for an environment (uses configured project)',
-        inputSchema: schemas.list_storage_containers
-    },
-    {
-        name: 'generate_storage_sas_link',
-        description: 'Generate SAS link for storage container',
-        inputSchema: schemas.generate_storage_sas_link
-    },
-    {
-        name: 'upload_deployment_package',
-        description: 'Upload a deployment package',
-        inputSchema: schemas.upload_deployment_package
-    },
-    {
-        name: 'deploy_package_and_start',
-        description: 'Deploy a package and start deployment',
-        inputSchema: schemas.deploy_package_and_start
-    },
-    {
-        name: 'get_edge_logs',
-        description: 'Get edge/CDN logs for entire project (BETA - requires enablement by Optimizely support)',
-        inputSchema: schemas.get_edge_logs
-    },
-    {
-        name: 'copy_content',
-        description: 'Copy content between environments (uses configured project)',
-        inputSchema: schemas.copy_content
+// Special handler for project info
+function handleProjectInfo() {
+    const projectId = process.env.OPTIMIZELY_PROJECT_ID;
+    const projectName = process.env.OPTIMIZELY_PROJECT_NAME;
+    const hasApiKey = !!process.env.OPTIMIZELY_API_KEY;
+    const hasApiSecret = !!process.env.OPTIMIZELY_API_SECRET;
+    const isConfigured = projectId && hasApiKey && hasApiSecret;
+    
+    let infoText = `📊 **Optimizely DXP Project Information**\n\n`;
+    
+    if (isConfigured) {
+        if (projectName) {
+            infoText += `✅ **Active Project: ${projectName}**\n\n`;
+        } else {
+            infoText += `✅ **Project is configured and ready!**\n\n`;
+        }
+        
+        infoText += `**Project Details:**\n`;
+        
+        if (projectName) {
+            infoText += `• Name: **${projectName}**\n`;
+        }
+        
+        infoText += `• Project ID: \`${projectId}\`\n` +
+                   `• API Key: ✅ Configured\n` +
+                   `• API Secret: ✅ Configured\n`;
+    } else {
+        infoText += `⚠️ **Configuration Required**\n\n` +
+                   `**Current Status:**\n` +
+                   `• Project ID: ${projectId ? `\`${projectId}\`` : '❌ Not configured'}\n` +
+                   `• API Key: ${hasApiKey ? '✅ Configured' : '❌ Not configured'}\n` +
+                   `• API Secret: ${hasApiSecret ? '✅ Configured' : '❌ Not configured'}\n\n`;
+        
+        if (!projectId || !hasApiKey || !hasApiSecret) {
+            infoText += `**To configure, you have two options:**\n\n` +
+                       `**Option 1: Pass credentials with each tool call**\n` +
+                       `When using any tool, provide:\n` +
+                       `• projectId: "your-project-id"\n` +
+                       `• apiKey: "your-api-key"\n` +
+                       `• apiSecret: "your-api-secret"\n\n` +
+                       `**Option 2: Configure environment variables (recommended)**\n` +
+                       `Edit your MCP client config and add:\n\n` +
+                       `\`\`\`json\n` +
+                       `"env": {\n` +
+                       `  "OPTIMIZELY_PROJECT_ID": "your-project-id",\n` +
+                       `  "OPTIMIZELY_API_KEY": "your-api-key",\n` +
+                       `  "OPTIMIZELY_API_SECRET": "your-api-secret"\n` +
+                       `}\n` +
+                       `\`\`\`\n\n` +
+                       `Then restart your MCP client.\n`;
+        }
     }
-];
+    
+    infoText += `\nBuilt by Jaxon Digital - Optimizely Gold Partner`;
+    
+    return {
+        result: {
+            content: [{
+                type: 'text',
+                text: infoText
+            }]
+        }
+    };
+}
+
+// Command handler map
+const commandHandlers = {
+    'get_project_info': handleProjectInfo,
+    'export_database': (args) => DatabaseTools.handleExportDatabase(args),
+    'check_export_status': (args) => DatabaseTools.handleCheckExportStatus(args),
+    'list_deployments': (args) => DeploymentTools.handleListDeployments(args),
+    'start_deployment': (args) => DeploymentTools.handleStartDeployment(args),
+    'get_deployment_status': (args) => DeploymentTools.handleGetDeploymentStatus(args),
+    'complete_deployment': (args) => DeploymentTools.handleCompleteDeployment(args),
+    'reset_deployment': (args) => DeploymentTools.handleResetDeployment(args),
+    'list_storage_containers': (args) => StorageTools.handleListStorageContainers(args),
+    'generate_storage_sas_link': (args) => StorageTools.handleGenerateStorageSasLink(args),
+    'upload_deployment_package': (args) => PackageTools.handleUploadDeploymentPackage(args),
+    'deploy_package_and_start': (args) => PackageTools.handleDeployPackageAndStart(args),
+    'get_edge_logs': (args) => LoggingTools.handleGetEdgeLogs(args),
+    'copy_content': (args) => ContentTools.handleCopyContent(args)
+};
+
+// Tool definitions
+const toolDefinitions = Object.keys(schemas).map(name => {
+    const descriptions = {
+        'get_project_info': 'Get current Optimizely project name and configuration details',
+        'export_database': 'Export database from an Optimizely DXP environment (uses configured project)',
+        'check_export_status': 'Check the status of a database export',
+        'list_deployments': 'List all deployments for the configured project',
+        'start_deployment': 'Start deployment between environments. Smart defaults: Upward (Int→Pre, Pre→Prod) deploys CODE; Downward (Prod→Pre/Int) copies CONTENT. Override with deploymentType: "code", "content", or "all". Commerce: set sourceApps: ["cms", "commerce"]',
+        'get_deployment_status': 'Get the status of a deployment',
+        'complete_deployment': 'Complete a deployment that is in Verification state',
+        'reset_deployment': 'Reset/rollback a deployment',
+        'list_storage_containers': 'List storage containers for an environment (uses configured project)',
+        'generate_storage_sas_link': 'Generate SAS link for storage container',
+        'upload_deployment_package': 'Upload a deployment package',
+        'deploy_package_and_start': 'Deploy a package and start deployment',
+        'get_edge_logs': 'Get edge/CDN logs for entire project (BETA - requires enablement by Optimizely support)',
+        'copy_content': 'Copy content between environments (uses configured project)'
+    };
+    
+    return {
+        name,
+        description: descriptions[name],
+        inputSchema: schemas[name]
+    };
+});
 
 // Create server instance
 const server = new Server(
     {
         name: Config.PROJECT.NAME,
-        version: '1.2.4' // SDK version
+        version: '1.3.0'
     },
     {
         capabilities: {
@@ -316,132 +351,14 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         }
     }
     
-    // Execute tool
+    // Execute tool using handler map
     try {
-        let result;
-        
-        switch (toolName) {
-            // Project info
-            case 'get_project_info':
-                const projectId = process.env.OPTIMIZELY_PROJECT_ID;
-                const projectName = process.env.OPTIMIZELY_PROJECT_NAME;
-                const hasApiKey = !!process.env.OPTIMIZELY_API_KEY;
-                const hasApiSecret = !!process.env.OPTIMIZELY_API_SECRET;
-                const isConfigured = projectId && hasApiKey && hasApiSecret;
-                
-                let infoText = `📊 **Optimizely DXP Project Information**\n\n`;
-                
-                if (isConfigured) {
-                    // Lead with project name if available
-                    if (projectName) {
-                        infoText += `✅ **Active Project: ${projectName}**\n\n`;
-                    } else {
-                        infoText += `✅ **Project is configured and ready!**\n\n`;
-                    }
-                    
-                    infoText += `**Project Details:**\n`;
-                    
-                    // Show project name first if available
-                    if (projectName) {
-                        infoText += `• Name: **${projectName}**\n`;
-                    }
-                    
-                    infoText += `• Project ID: \`${projectId}\`\n` +
-                               `• API Key: ✅ Configured\n` +
-                               `• API Secret: ✅ Configured\n`;
-                } else {
-                    infoText += `⚠️ **Configuration Required**\n\n` +
-                               `**Current Status:**\n` +
-                               `• Project ID: ${projectId ? `\`${projectId}\`` : '❌ Not configured'}\n` +
-                               `• API Key: ${hasApiKey ? '✅ Configured' : '❌ Not configured'}\n` +
-                               `• API Secret: ${hasApiSecret ? '✅ Configured' : '❌ Not configured'}\n\n`;
-                    
-                    if (!projectId || !hasApiKey || !hasApiSecret) {
-                        infoText += `**To configure, you have two options:**\n\n` +
-                                   `**Option 1: Pass credentials with each tool call**\n` +
-                                   `When using any tool, provide:\n` +
-                                   `• projectId: "your-project-id"\n` +
-                                   `• apiKey: "your-api-key"\n` +
-                                   `• apiSecret: "your-api-secret"\n\n` +
-                                   `**Option 2: Configure environment variables (recommended)**\n` +
-                                   `Edit your MCP client config and add:\n\n` +
-                                   `\`\`\`json\n` +
-                                   `"env": {\n` +
-                                   `  "OPTIMIZELY_PROJECT_ID": "your-project-id",\n` +
-                                   `  "OPTIMIZELY_API_KEY": "your-api-key",\n` +
-                                   `  "OPTIMIZELY_API_SECRET": "your-api-secret"\n` +
-                                   `}\n` +
-                                   `\`\`\`\n\n` +
-                                   `Then restart your MCP client.\n`;
-                    }
-                }
-                
-                infoText += `\nBuilt by Jaxon Digital - Optimizely Gold Partner`;
-                
-                result = {
-                    result: {
-                        content: [{
-                            type: 'text',
-                            text: infoText
-                        }]
-                    }
-                };
-                break;
-            
-            // Database operations
-            case 'export_database':
-                result = await DatabaseTools.handleExportDatabase(null, validatedArgs);
-                break;
-            case 'check_export_status':
-                result = await DatabaseTools.handleCheckExportStatus(null, validatedArgs);
-                break;
-            
-            // Deployment operations
-            case 'list_deployments':
-                result = await DeploymentTools.handleListDeployments(null, validatedArgs);
-                break;
-            case 'start_deployment':
-                result = await DeploymentTools.handleStartDeployment(null, validatedArgs);
-                break;
-            case 'get_deployment_status':
-                result = await DeploymentTools.handleGetDeploymentStatus(null, validatedArgs);
-                break;
-            case 'complete_deployment':
-                result = await DeploymentTools.handleCompleteDeployment(null, validatedArgs);
-                break;
-            case 'reset_deployment':
-                result = await DeploymentTools.handleResetDeployment(null, validatedArgs);
-                break;
-            
-            // Storage operations
-            case 'list_storage_containers':
-                result = await StorageTools.handleListStorageContainers(null, validatedArgs);
-                break;
-            case 'generate_storage_sas_link':
-                result = await StorageTools.handleGenerateStorageSasLink(null, validatedArgs);
-                break;
-            
-            // Package operations
-            case 'upload_deployment_package':
-                result = await PackageTools.handleUploadDeploymentPackage(null, validatedArgs);
-                break;
-            case 'deploy_package_and_start':
-                result = await PackageTools.handleDeployPackageAndStart(null, validatedArgs);
-                break;
-            
-            // Logging operations
-            case 'get_edge_logs':
-                result = await LoggingTools.handleGetEdgeLogs(null, validatedArgs);
-                break;
-            
-            // Content operations
-            case 'copy_content':
-                result = await ContentTools.handleCopyContent(null, validatedArgs);
-                break;
-            
-            default:
-                throw new Error(`Tool ${toolName} not implemented`);
+        const handler = commandHandlers[toolName];
+        if (!handler) {
+            throw new Error(`Tool ${toolName} not implemented`);
         }
+        
+        const result = await handler(validatedArgs);
         
         // Handle response format
         if (result.error) {
