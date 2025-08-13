@@ -7,30 +7,6 @@ Manage your Optimizely DXP deployments through AI assistants! This MCP (Model Co
 
 Built by [Jaxon Digital](https://www.jaxondigital.com) - your trusted **Optimizely Gold Partner** and **AI Solutions Expert**.
 
-## 🎉 What's New
-
-### 🎨 Enhanced User Experience
-- **Project-Centric Interface** - Changed from "server info" to "project info" with project name prominently displayed
-- **Project Names in Deployments** - List deployments now shows project name in the header
-- **Always Shows Preview URLs** - Preview URLs are prominently displayed for deployments awaiting verification
-- **Cleaner Status Display** - Removed technical command references, using friendly language instead
-- **Better Action Guidance** - Clear next steps shown for deployments (complete/reset) without technical syntax
-- **Improved Progress Indicators** - Visual checkmarks (✅) for completed steps and progress
-
-### 🌟 Major Feature: Multi-Project Support!
-- **Manage Multiple Projects** - Switch between projects seamlessly in conversations
-- **Project Overrides** - Pass projectId, apiKey, apiSecret to any command
-- **Named Projects** - Configure friendly names for your projects
-- **Environment Access Control** - Limit which environments each project can access
-
-### 🔧 Additional Improvements
-- **Fixed Edge Logs** - Removed environment parameter (applies to entire project)
-- **Smart Deployment Defaults** - Automatically detects deployment type based on direction:
-  - **Upward** (Int→Pre, Pre→Prod): Deploys CODE
-  - **Downward** (Prod→Pre/Int): Copies CONTENT (BLOBs + Database)
-- **Deployment Path Validation** - Prevents direct code deployment from Integration to Production
-- **Commerce Support** - Specify sourceApps: ["cms", "commerce"] for Commerce projects
-
 ## 🤖 Compatible AI Assistants
 
 This MCP server works with:
