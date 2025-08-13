@@ -62,7 +62,7 @@ logs/*.nupkg
 test-env-vars.js
 jaxon-mcp-wrapper.sh
 jaxon-optimizely-dxp-mcp-clean.js
-CLAUDE.md
+# CLAUDE.md tracked in private repo only
 INSTALL.md
 MCP_CLIENT_CONFIG.md
 mcp-client.js
