@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * Jaxon Digital Optimizely DXP MCP Server - v1.3.0
+ * Jaxon Digital Optimizely DXP MCP Server - v1.4.0
  * Built with official @modelcontextprotocol/sdk for full Claude compatibility
  * 
  * Built by Jaxon Digital - Optimizely Gold Partner
@@ -27,7 +27,8 @@ const {
     StorageTools, 
     PackageTools, 
     LoggingTools,
-    ContentTools 
+    ContentTools,
+    DeploymentHelperTools 
 } = require(path.join(libPath, 'tools'));
 
 // Define Zod schemas for each tool
@@ -148,6 +149,29 @@ const schemas = {
         projectId: z.string().optional(),
         apiKey: z.string().optional(),
         apiSecret: z.string().optional()
+    }),
+    
+    // Deployment helper operations
+    analyze_package: z.object({
+        packagePath: z.string()
+    }),
+    
+    prepare_deployment_package: z.object({
+        sourcePath: z.string(),
+        outputPath: z.string().optional(),
+        excludePatterns: z.array(z.string()).optional()
+    }),
+    
+    generate_sas_upload_url: z.object({
+        environment: z.enum(['Integration', 'Preproduction', 'Production']),
+        projectId: z.string().optional(),
+        apiKey: z.string().optional(),
+        apiSecret: z.string().optional()
+    }),
+    
+    split_package: z.object({
+        packagePath: z.string(),
+        chunkSizeMB: z.number().optional().default(50)
     })
 };
 
@@ -231,7 +255,11 @@ const commandHandlers = {
     'upload_deployment_package': (args) => PackageTools.handleUploadDeploymentPackage(args),
     'deploy_package_and_start': (args) => PackageTools.handleDeployPackageAndStart(args),
     'get_edge_logs': (args) => LoggingTools.handleGetEdgeLogs(args),
-    'copy_content': (args) => ContentTools.handleCopyContent(args)
+    'copy_content': (args) => ContentTools.handleCopyContent(args),
+    'analyze_package': (args) => DeploymentHelperTools.handleAnalyzePackage(args),
+    'prepare_deployment_package': (args) => DeploymentHelperTools.handlePrepareDeploymentPackage(args),
+    'generate_sas_upload_url': (args) => DeploymentHelperTools.handleGenerateSasUploadUrl(args),
+    'split_package': (args) => DeploymentHelperTools.handleSplitPackage(args)
 };
 
 // Tool definitions
@@ -250,7 +278,11 @@ const toolDefinitions = Object.keys(schemas).map(name => {
         'upload_deployment_package': 'Upload a deployment package',
         'deploy_package_and_start': 'Deploy a package and start deployment',
         'get_edge_logs': 'Get edge/CDN logs for entire project (BETA - requires enablement by Optimizely support)',
-        'copy_content': 'Copy content between environments (uses configured project)'
+        'copy_content': 'Copy content between environments (uses configured project)',
+        'analyze_package': 'Analyze deployment package size and provide upload recommendations',
+        'prepare_deployment_package': 'Prepare optimized deployment package from source directory',
+        'generate_sas_upload_url': 'Generate SAS URL for direct package upload (best for large files)',
+        'split_package': 'Split large package into smaller chunks for easier upload'
     };
     
     return {
@@ -264,7 +296,7 @@ const toolDefinitions = Object.keys(schemas).map(name => {
 const server = new Server(
     {
         name: Config.PROJECT.NAME,
-        version: '1.3.0'
+        version: '1.4.0'
     },
     {
         capabilities: {
