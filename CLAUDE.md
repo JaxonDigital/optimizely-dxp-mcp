@@ -220,3 +220,65 @@ git push public main
 
 ### Keeping Repos in Sync
 The private repo is the source of truth. Public repo gets selective pushes without development files.
+
+## Environment Configuration
+
+### Local Development with .env Files
+The MCP server now supports loading credentials from `.env` files in the current directory:
+
+```bash
+# Create project-specific .env files
+cp .env.christie .env  # For Christie project
+cp .env.vhb .env       # For VHB project
+```
+
+### Claude Code CLI Configuration
+```bash
+# Add global MCP (uses npm package)
+claude mcp add jaxon-optimizely-dxp-mcp "jaxon-optimizely-dxp-mcp"
+
+# Add local development MCP (uses local files)
+claude mcp add optimizely-dev "node /Users/bgerby/Documents/dev/deployment-mcp/jaxon-optimizely-dxp-mcp.js"
+
+# List configured MCPs
+claude mcp list
+
+# Use MCP in Claude Code
+claude "Use jaxon-optimizely-dxp-mcp to check deployment status"
+```
+
+### .env File Format
+```env
+OPTIMIZELY_PROJECT_NAME=YourProjectName
+OPTIMIZELY_PROJECT_ID=your-project-uuid-here
+OPTIMIZELY_API_KEY=your-api-key-here
+OPTIMIZELY_API_SECRET=your-api-secret-here
+```
+
+**Note**: `.env` files are gitignored for security
+
+## Latest Updates (v1.5.0)
+
+### Security Enhancements
+- Comprehensive SecurityHelper module for API secret protection
+- Automatic masking of secrets in all outputs
+- Git pre-commit hooks to prevent accidental secret commits
+- Sanitization of error messages and command outputs
+
+### Code Refactoring
+- Modular architecture with separated concerns
+- PowerShellCommandBuilder for safe command construction
+- Split deployment tools into logical components
+- Removed hardcoded version references
+
+### MCP Platform Notes
+- MCP only works with Claude Desktop and Claude Code CLI
+- Does NOT work with Claude web interface (browser)
+- Requires local Node.js installation
+- Claude Desktop workspace issues may require support intervention
+
+## Version History
+- **v1.5.0** - Security enhancements, modular refactoring, .env support
+- **v1.4.1** - PowerShell command builder, deployment fixes
+- **v1.3.0** - Initial security measures
+- **v1.2.26** - SDK migration for Claude compatibility

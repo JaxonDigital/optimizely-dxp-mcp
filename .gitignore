@@ -72,3 +72,8 @@ setup-claude-config.sh
 *-clean.js
 test-*.js
 test-*.sh
+
+# Environment files
+.env
+.env.local
+EOF < /dev/null

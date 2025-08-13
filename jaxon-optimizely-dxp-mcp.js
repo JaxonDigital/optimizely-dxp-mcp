@@ -8,6 +8,22 @@
  * https://www.jaxondigital.com
  */
 
+// Load environment variables from .env file if it exists
+const fs = require('fs');
+const path = require('path');
+const envPath = path.join(process.cwd(), '.env');
+if (fs.existsSync(envPath)) {
+  const envContent = fs.readFileSync(envPath, 'utf8');
+  envContent.split('\n').forEach(line => {
+    if (line && !line.startsWith('#')) {
+      const [key, ...valueParts] = line.split('=');
+      if (key && valueParts.length > 0) {
+        process.env[key.trim()] = valueParts.join('=').trim();
+      }
+    }
+  });
+}
+
 const { Server } = require('@modelcontextprotocol/sdk/server/index.js');
 const { StdioServerTransport } = require('@modelcontextprotocol/sdk/server/stdio.js');
 const { 
@@ -16,7 +32,6 @@ const {
 } = require('@modelcontextprotocol/sdk/types.js');
 const { z } = require('zod');
 const { zodToJsonSchema } = require('zod-to-json-schema');
-const path = require('path');
 
 // Import existing modules
 const libPath = path.join(__dirname, 'lib');
