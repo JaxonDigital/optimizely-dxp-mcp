@@ -152,12 +152,53 @@ npm install -g jaxon-optimizely-dxp-mcp@latest
 - MCP servers run as separate processes
 - Environment variables provide project context
 
+## Security Measures
+
+### Secret Protection
+- **SecurityHelper module** - Provides comprehensive secret protection
+  - Masks secrets in logs and error messages
+  - Validates credential formats
+  - Sanitizes command output
+  - Detects potential secret exposure
+
+### Security Features
+1. **Automatic Secret Masking**
+   - API keys and secrets are masked in all outputs
+   - Error messages are sanitized before display
+   - Command logs show masked credentials
+
+2. **Credential Validation**
+   - Checks for proper UUID format for project IDs
+   - Validates API key/secret length and format
+   - Prevents exposure of malformed credentials
+
+3. **Git Pre-commit Hooks**
+   - `scripts/check-secrets.sh` - Scans for secrets before commit
+   - `.gitleaks.toml` - Configuration for secret detection
+   - Blocks commits containing real credentials
+
+### Security Best Practices
+- Never hardcode credentials in code
+- Always use environment variables for secrets
+- Test with fake credentials in examples
+- Review all error messages for secret exposure
+- Use the SecurityHelper for any new error handling
+
+### Running Security Checks
+```bash
+# Manual secret scan
+./scripts/check-secrets.sh
+
+# Install as git hook
+ln -s ../../scripts/check-secrets.sh .git/hooks/pre-commit
+```
+
 ## Common Issues
 
 ### Connection Issues
 - Ensure Node.js is in PATH
 - Check PowerShell Core is installed
-- Verify API credentials are correct
+- Verify API credentials are correct (use SecurityHelper.validateCredentials)
 
 ### Deployment Failures
 - Check SourceApp parameter for code deployments
