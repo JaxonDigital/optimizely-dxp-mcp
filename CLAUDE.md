@@ -42,7 +42,7 @@ Built by Jaxon Digital - Optimizely Gold Partner
 1. **get_project_info** - Display project configuration
 2. **export_database** - Export database from environment
 3. **check_export_status** - Check database export status
-4. **list_deployments** - List all deployments
+4. **list_deployments** - List all deployments (supports limit: 1-100)
 5. **start_deployment** - Start new deployment
 6. **get_deployment_status** - Get deployment status
 7. **complete_deployment** - Complete deployment in verification
@@ -193,12 +193,33 @@ npm install -g jaxon-optimizely-dxp-mcp@latest
 ln -s ../../scripts/check-secrets.sh .git/hooks/pre-commit
 ```
 
-## Common Issues
+## Common Issues & Fixes (v1.5.1+)
+
+### ✅ FIXED: analyze_package PowerShellHelper.executePowerShell error
+- **Issue**: Method was missing, causing TypeError
+- **Fix**: Added `executePowerShell` method with UTF-16LE encoding for PowerShell scripts
+- **File**: `lib/powershell-helper.js`
+
+### ✅ FIXED: Deployment environment names showing as "Unknown"
+- **Issue**: Environment names were not being read from correct properties
+- **Fix**: Read from `parameters.sourceEnvironment` and `parameters.targetEnvironment`
+- **File**: `lib/tools/deployment/deployment-formatters.js`
+
+### ✅ FIXED: No response with invalid limit values
+- **Issue**: Negative/zero limits caused no response
+- **Fix**: Added Zod validation (min: 1, max: 100) for limit parameter
+- **File**: `jaxon-optimizely-dxp-mcp.js`
+
+### ✅ FIXED: Missing VERIFICATION status icon
+- **Issue**: `undefined` appeared in deployment status display
+- **Fix**: Added VERIFICATION: '👁️' to STATUS_ICONS
+- **File**: `lib/config.js`
 
 ### Connection Issues
 - Ensure Node.js is in PATH
 - Check PowerShell Core is installed
 - Verify API credentials are correct (use SecurityHelper.validateCredentials)
+- PowerShell scripts use UTF-16LE base64 encoding for -EncodedCommand
 
 ### Deployment Failures
 - Check SourceApp parameter for code deployments
@@ -257,7 +278,20 @@ OPTIMIZELY_API_SECRET=your-api-secret-here
 
 **Note**: `.env` files are gitignored for security
 
-## Latest Updates (v1.5.0)
+## Latest Updates (v1.5.1 - Released 2025-08-13)
+
+### Critical Bug Fixes
+- Fixed `analyze_package` PowerShellHelper.executePowerShell error
+- Fixed deployment environment names showing as "Unknown"
+- Fixed no response with invalid limit values
+- Added missing VERIFICATION status icon
+
+### Testing Results
+- Comprehensive test suite created (`test-global-v1.5.1.js`)
+- All critical fixes verified in production (npm v1.5.1)
+- Test plan documented in `MCP_TEST_PLAN.md`
+
+## Previous Updates (v1.5.0)
 
 ### Security Enhancements
 - Comprehensive SecurityHelper module for API secret protection
