@@ -1,6 +1,6 @@
 {
   "name": "jaxon-optimizely-dxp-mcp",
-  "version": "1.7.3",
+  "version": "1.7.4",
   "description": "Jaxon Digital's MCP server for Optimizely DXP deployment operations with enhanced large file support for full Claude compatibility",
   "main": "jaxon-optimizely-dxp-mcp.js",
   "bin": {
