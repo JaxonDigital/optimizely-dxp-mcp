@@ -290,9 +290,9 @@ Visit [www.jaxondigital.com](https://www.jaxondigital.com) to learn more.
 ### Need Assistance?
 We're here to help! Contact Jaxon Digital's support team:
 
-- 📧 **Email Support**: [hello@jaxondigital.com](mailto:hello@jaxondigital.com)
+- 📧 **Email Support**: [support@jaxondigital.com](mailto:support@jaxondigital.com)
 - 📋 **Report Bugs**: [GitHub Issues](https://github.com/jaxondigital/jaxon-optimizely-dxp-mcp/issues)
-- 💬 **General Questions**: [hello@jaxondigital.com](mailto:hello@jaxondigital.com)
+- 💬 **General Questions**: [support@jaxondigital.com](mailto:support@jaxondigital.com)
 - 🌐 **Website**: [www.jaxondigital.com](https://www.jaxondigital.com)
 
 ### Common Issues
@@ -301,7 +301,7 @@ We're here to help! Contact Jaxon Digital's support team:
 - **Authentication failures**: Verify your API keys and project ID
 
 ### Enterprise Support
-For enterprise support plans and custom integrations, contact us at [hello@jaxondigital.com](mailto:hello@jaxondigital.com)
+For enterprise support plans and custom integrations, contact us at [support@jaxondigital.com](mailto:support@jaxondigital.com)
 
 ## 📄 License
 
