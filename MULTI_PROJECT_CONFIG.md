@@ -11,7 +11,29 @@ The Optimizely DXP MCP Server supports managing multiple projects through differ
 
 ## 📋 Configuration Options
 
-### Option 1: Single Project Configuration (RECOMMENDED)
+### Option 1: Multiple Projects in One Instance (NEW - v1.6.0) 🎉
+Configure all your projects in a single MCP instance:
+
+```json
+{
+  "mcpServers": {
+    "jaxon-optimizely-dxp": {
+      "command": "jaxon-optimizely-dxp-mcp",
+      "env": {
+        "OPTIMIZELY_PROJECTS": "[{\"name\":\"production\",\"id\":\"abc-123\",\"apiKey\":\"prod-key\",\"apiSecret\":\"prod-secret\",\"isDefault\":true},{\"name\":\"development\",\"id\":\"def-456\",\"apiKey\":\"dev-key\",\"apiSecret\":\"dev-secret\"}]"
+      }
+    }
+  }
+}
+```
+
+**Benefits:**
+- ✅ Single MCP instance manages all projects
+- ✅ Easy switching by project name
+- ✅ Use "list projects" to see all configured projects
+- ✅ Default project for quick operations
+
+### Option 2: Single Project Configuration
 The simplest approach for managing one project:
 
 ```json
@@ -30,7 +52,7 @@ The simplest approach for managing one project:
 }
 ```
 
-### Option 2: Multiple MCP Instances for Different Projects
+### Option 3: Multiple MCP Instances for Different Projects
 Configure separate MCP instances for each project:
 
 ```json
@@ -58,7 +80,7 @@ Configure separate MCP instances for each project:
 }
 ```
 
-### Option 3: Dynamic Credential Override
+### Option 4: Dynamic Credential Override
 Configure a default project and override credentials as needed:
 
 ```json
@@ -78,6 +100,12 @@ Configure a default project and override credentials as needed:
 ```
 
 ## 💬 Usage Examples
+
+### List All Projects (NEW!)
+```
+User: "List projects"
+AI: Shows all configured projects with their names and IDs
+```
 
 ### Working with Default Project
 ```
@@ -168,13 +196,19 @@ The MCP server will automatically load these when run from the same directory.
 
 **Important**: Never commit `.env` files to version control!
 
-## 🤔 Limitations
+## ✨ New Features (v1.6.0)
 
-- Each MCP instance manages one project at a time
-- Switching projects requires either:
-  - Multiple MCP instances configured
-  - Dynamic credential override per operation
-- No built-in project list management (yet)
+### Built-in Project Management
+- **list_projects** - View all configured projects
+- **get_project_info** - Get details for any project
+- **Automatic project switching** - Use project names in commands
+- **OPTIMIZELY_PROJECTS** - Configure multiple projects in one place
+
+### Smart Project Switching
+Just use the project name or ID in your commands:
+- "List deployments for production"
+- "Deploy on development project"
+- "Check status on project abc-123"
 
 ---
 

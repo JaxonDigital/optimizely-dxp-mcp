@@ -45,11 +45,17 @@ const {
     ContentTools,
     DeploymentHelperTools 
 } = require(path.join(libPath, 'tools'));
+const ProjectTools = require(path.join(libPath, 'tools', 'project-tools'));
 
 // Define Zod schemas for each tool
 const schemas = {
-    // Project info
-    get_project_info: z.object({}),
+    // Project management
+    get_project_info: z.object({
+        projectId: z.string().optional(),
+        projectName: z.string().optional()
+    }),
+    
+    list_projects: z.object({}),
     
     // Database operations
     export_database: z.object({
@@ -192,8 +198,13 @@ const schemas = {
     })
 };
 
-// Special handler for project info
-function handleProjectInfo() {
+// Special handler for project info - now delegated to ProjectTools
+function handleProjectInfo(args) {
+    return ProjectTools.getProjectInfo(args);
+}
+
+// Legacy project info handler (for reference)
+function handleProjectInfoLegacy() {
     const projectId = process.env.OPTIMIZELY_PROJECT_ID;
     const projectName = process.env.OPTIMIZELY_PROJECT_NAME;
     const hasApiKey = !!process.env.OPTIMIZELY_API_KEY;
@@ -260,6 +271,7 @@ function handleProjectInfo() {
 // Command handler map
 const commandHandlers = {
     'get_project_info': handleProjectInfo,
+    'list_projects': (args) => ProjectTools.listProjects(args),
     'export_database': (args) => DatabaseTools.handleExportDatabase(args),
     'check_export_status': (args) => DatabaseTools.handleCheckExportStatus(args),
     'list_deployments': (args) => DeploymentTools.handleListDeployments(args),
@@ -282,7 +294,8 @@ const commandHandlers = {
 // Tool definitions
 const toolDefinitions = Object.keys(schemas).map(name => {
     const descriptions = {
-        'get_project_info': 'Get current Optimizely project name and configuration details',
+        'get_project_info': 'Get current Optimizely project configuration details or info for a specific project',
+        'list_projects': 'List all configured Optimizely projects',
         'export_database': 'Export database from an Optimizely DXP environment (uses configured project)',
         'check_export_status': 'Check the status of a database export',
         'list_deployments': 'List all deployments for the configured project',
@@ -356,15 +369,32 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         };
     }
     
+    // Handle project switching and credential injection
+    // First check if a project name was provided (for easier switching)
+    if (validatedArgs.projectName && !validatedArgs.projectId) {
+        const projectCreds = ProjectTools.getProjectCredentials(validatedArgs.projectName);
+        if (projectCreds) {
+            validatedArgs.projectId = projectCreds.projectId;
+            validatedArgs.apiKey = projectCreds.apiKey;
+            validatedArgs.apiSecret = projectCreds.apiSecret;
+        }
+    }
+    
     // Inject environment credentials if not provided
     if (!validatedArgs.projectId) {
-        validatedArgs.projectId = process.env.OPTIMIZELY_PROJECT_ID;
+        const defaultCreds = ProjectTools.getProjectCredentials();
+        validatedArgs.projectId = defaultCreds.projectId || process.env.OPTIMIZELY_PROJECT_ID;
+        validatedArgs.apiKey = defaultCreds.apiKey || process.env.OPTIMIZELY_API_KEY;
+        validatedArgs.apiSecret = defaultCreds.apiSecret || process.env.OPTIMIZELY_API_SECRET;
     }
-    if (!validatedArgs.apiKey) {
-        validatedArgs.apiKey = process.env.OPTIMIZELY_API_KEY;
-    }
-    if (!validatedArgs.apiSecret) {
-        validatedArgs.apiSecret = process.env.OPTIMIZELY_API_SECRET;
+    
+    // If still missing apiKey or apiSecret, try to get from configured projects
+    if (!validatedArgs.apiKey || !validatedArgs.apiSecret) {
+        const projectCreds = ProjectTools.getProjectCredentials(validatedArgs.projectId);
+        if (projectCreds) {
+            validatedArgs.apiKey = validatedArgs.apiKey || projectCreds.apiKey;
+            validatedArgs.apiSecret = validatedArgs.apiSecret || projectCreds.apiSecret;
+        }
     }
     
     // Log which project is being used (to stderr to avoid polluting stdout)
@@ -372,8 +402,8 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         console.error(`Using project: ${validatedArgs.projectId}`);
     }
     
-    // Check for missing credentials (except for get_project_info)
-    if (toolName !== 'get_project_info') {
+    // Check for missing credentials (except for project management tools)
+    if (toolName !== 'get_project_info' && toolName !== 'list_projects') {
         const missingCreds = [];
         if (!validatedArgs.projectId) missingCreds.push('Project ID');
         if (!validatedArgs.apiKey) missingCreds.push('API Key');
