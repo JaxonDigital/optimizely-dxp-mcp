@@ -436,3 +436,4 @@ OPTIMIZELY_API_SECRET=your-api-secret-here
 - Private repo is the source of truth
 - Use `./scripts/sync-public-repo.sh` to sync to public
 - Never manually push sensitive files to public repo
+- always publish to npm every time we update the public repo and vice versa
