@@ -236,14 +236,77 @@ ln -s ../../scripts/check-secrets.sh .git/hooks/pre-commit
 
 ## Git Workflow
 
-### Pushing to Public Repository
+### Repository Management
+
+#### Initial Setup
+Run this once to configure remotes and git hooks:
 ```bash
-# Push to public repo (excludes CLAUDE.md and other dev files)
-git push public main
+./scripts/setup-repo.sh
 ```
 
-### Keeping Repos in Sync
-The private repo is the source of truth. Public repo gets selective pushes without development files.
+#### Daily Workflow
+1. **All development work** happens in the private repository
+2. **Push to private repo** regularly: `git push origin main`
+3. **Sync to public repo** when ready: `./scripts/sync-public-repo.sh`
+
+#### Repository Structure
+- **Private Repo** (`origin`): Contains everything - all code, tests, client configs, development notes
+- **Public Repo** (`public`): Clean subset defined in `.public-files` manifest
+
+#### Safety Features
+- **Pre-push hook**: Prevents accidental push of sensitive files to public repo
+- **Pre-commit hook**: Checks for secrets before any commit
+- **Sync script**: Safely copies only public files with validation
+
+### Syncing to Public Repository
+
+#### Automated Method (RECOMMENDED)
+```bash
+# This script handles everything safely
+./scripts/sync-public-repo.sh
+```
+
+The script will:
+1. Check for uncommitted changes
+2. Copy only files listed in `.public-files`
+3. Scan for sensitive files
+4. Create a clean commit
+5. Ask for confirmation before pushing
+6. Force push to public repo (clean history)
+
+#### Manual Method (if needed)
+```bash
+# Only if automated sync fails
+git push public main --force
+```
+
+### Files That Should NEVER Go to Public Repo
+- `CLAUDE.md` - This file (internal notes)
+- `MCP_TEST_PLAN.md` - Internal testing documentation
+- `.env*` - All environment files (credentials)
+- `test-*` - All test files
+- `*.bacpac`, `*.nupkg`, `*.zip` - Package/backup files
+- `scripts/check-secrets.sh` - Security tooling
+- `.gitleaks.toml` - Security configuration
+
+### Adding New Files
+1. Develop and test in private repo
+2. If file should be public, add to `.public-files` manifest
+3. Run sync script to update public repo
+
+### Emergency Fixes
+If sensitive files accidentally get pushed to public:
+```bash
+# Immediately force push clean version
+./scripts/sync-public-repo.sh
+
+# Or manually create clean commit
+git checkout --orphan clean-branch
+# Copy only public files
+git add [public files only]
+git commit -m "Clean release"
+git push public clean-branch:main --force
+```
 
 ## Environment Configuration
 

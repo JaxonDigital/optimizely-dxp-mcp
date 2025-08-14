@@ -1,0 +1,27 @@
+# Files and directories that should be included in the public repository
+# One file/directory per line
+# Lines starting with # are comments
+
+# Documentation
+README.md
+CHANGELOG.md
+LICENSE
+MULTI_PROJECT_CONFIG.md
+
+# Configuration
+.gitignore
+package.json
+package-lock.json
+
+# Source code
+jaxon-optimizely-dxp-mcp.js
+lib/
+
+# NEVER include these files in public repo:
+# - CLAUDE.md (internal development notes)
+# - MCP_TEST_PLAN.md (internal testing)
+# - .env* files (credentials)
+# - test-* files (test scripts and data)
+# - scripts/check-secrets.sh (security tools)
+# - .gitleaks.toml (security config)
+# - *.bacpac, *.nupkg, *.zip (packages)
