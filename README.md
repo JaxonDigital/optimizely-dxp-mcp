@@ -24,6 +24,8 @@ Just ask your AI assistant to help with tasks like:
 - "Show me recent deployments"
 - "Generate a storage link for the media container"
 - "Check the status of my deployment"
+- "Analyze my deployment package for optimal upload strategy"
+- "Split large packages for chunked upload"
 
 No more memorizing PowerShell commands or navigating complex portals!
 
@@ -162,11 +164,18 @@ Ask your AI anytime:
 Your AI assistant can help you with all these tasks:
 
 ### Deployments
-- View all your deployments and their status
+- View all your deployments and their status (with limit support: 1-100)
 - Deploy code between environments
-- Complete deployments to go live
+- Complete deployments to go live (with verification preview URLs)
 - Roll back deployments if needed
 - Upload new deployment packages
+- Smart deployment defaults (upward = code, downward = content)
+
+### Package Management (New in v1.5+)
+- Analyze packages for optimal upload strategy
+- Split large packages (>100MB) into chunks
+- Generate SAS URLs for direct upload
+- Handle multi-GB deployments efficiently
 
 ### Databases
 - Export databases as backup files
@@ -180,7 +189,7 @@ Your AI assistant can help you with all these tasks:
 
 ### Monitoring
 - View edge/CDN logs (⚠️ BETA: Requires enablement by Optimizely support)
-- Check deployment status
+- Check deployment status with visual indicators
 - Monitor operations progress
 
 ## 🌍 Supported Environments
@@ -214,6 +223,13 @@ To enable:
 3. Ask "What MCP tools are available?"
 4. Verify your client supports MCP protocol
 
+### Recent Issues Fixed (v1.5.1)
+- ✅ Fixed deployment environment names showing as "Unknown"
+- ✅ Fixed analyze_package PowerShell execution errors
+- ✅ Fixed invalid limit values causing no response
+- ✅ Added missing verification status icons
+- ✅ Enhanced security with automatic secret masking
+
 ## 🏢 About Jaxon Digital
 
 **Jaxon Digital** is a certified **Optimizely Gold Partner** specializing in:
@@ -226,6 +242,25 @@ To enable:
 We help businesses leverage AI and modern technology to transform their digital experiences.
 
 Visit [www.jaxondigital.com](https://www.jaxondigital.com) to learn more.
+
+## 📦 Version History
+
+### v1.5.1 (Latest - December 2024)
+- ✅ Fixed critical bugs in deployment status display
+- ✅ Enhanced package analysis for large files
+- ✅ Improved error handling with secret masking
+- ✅ Added comprehensive validation for all parameters
+
+### v1.5.0 (December 2024)
+- 🔐 Security enhancements with automatic secret protection
+- 📦 Large file handling (analyze, split, SAS upload)
+- 🏗️ Modular architecture refactoring
+- 🔧 PowerShell command builder for safer operations
+
+### v1.4.x
+- Initial SDK migration for Claude compatibility
+- Multi-project support
+- Smart deployment defaults
 
 ## 🆘 Need Help?
 
