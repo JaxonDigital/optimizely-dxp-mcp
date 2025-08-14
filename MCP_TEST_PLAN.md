@@ -3,11 +3,11 @@
 ## Test Environment Setup
 
 ### Prerequisites
-- [x] Verify installed MCP version: `npm list -g jaxon-optimizely-dxp-mcp` ✅ v1.5.0
-- [x] Verify PowerShell Core installed: `pwsh --version` ✅ 7.2.1
-- [x] Verify EpiCloud module available: `pwsh -c "Get-Module -ListAvailable EpiCloud"` ✅ 1.10.0 & 1.2.0
-- [x] Verify Node.js version: `node --version` (should be v18+) ✅ v22.16.0
-- [x] Check Claude Desktop is using global package (not local dev) ✅ /Users/bgerby/.nvm/versions/node/v22.16.0/bin/
+- [ ] Verify installed MCP version: `npm list -g jaxon-optimizely-dxp-mcp` (Current: v1.7.0)
+- [ ] Verify PowerShell Core installed: `pwsh --version`
+- [ ] Verify EpiCloud module available: `pwsh -c "Get-Module -ListAvailable EpiCloud"`
+- [ ] Verify Node.js version: `node --version` (should be v18+)
+- [ ] Check Claude Desktop is using global package (not local dev)
 
 ### Test Credentials
 - [ ] Prepare test project with valid API credentials
@@ -17,16 +17,74 @@
 ## 1. Core Information Tools
 
 ### 1.1 get_project_info
-- [x] **Basic Test**: Run without parameters ✅ Works correctly
-- [x] **Edge Cases**:
-  - [x] Missing environment variables ⚠️ Shows as configured (needs better validation)
-  - [x] Invalid project ID format ✅ Accepts non-UUID (should validate)
+- [ ] **Basic Tests**:
+  - [ ] Run without parameters (should show no projects or env-configured)
+  - [ ] Run with inline credentials (projectName, projectId, apiKey, apiSecret)
+  - [ ] Run with only projectName (after registration)
+  - [ ] Run with projectId only
+- [ ] **Dynamic Registration Tests**:
+  - [ ] Provide all 4 inline credentials - should auto-register
+  - [ ] Update existing project with new credentials
+  - [ ] Verify project persists in memory
+- [ ] **Edge Cases**:
+  - [ ] Missing environment variables
+  - [ ] Invalid project ID format
   - [ ] Empty project name
   - [ ] Special characters in project name
+  - [ ] Duplicate project names
+  - [ ] Very long project names
 
-## 2. Database Operations
+### 1.2 list_projects (NEW in v1.7.0)
+- [ ] **Basic Tests**:
+  - [ ] List with no projects configured
+  - [ ] List with environment-configured project
+  - [ ] List after adding projects dynamically
+  - [ ] List shows correct project count
+- [ ] **Dynamic Project Tests**:
+  - [ ] Projects added via inline credentials appear
+  - [ ] Project names shown with friendly labels
+  - [ ] Last used timestamps update correctly
+  - [ ] Default project marked with star
+- [ ] **Edge Cases**:
+  - [ ] Many projects (10+)
+  - [ ] Projects with same name but different IDs
 
-### 2.1 export_database
+## 2. Dynamic Project Management (NEW in v1.7.0)
+
+### 2.1 Inline Credential Provision
+- [ ] **All Tools Support**:
+  - [ ] export_database with inline credentials
+  - [ ] start_deployment with inline credentials
+  - [ ] list_deployments with inline credentials
+  - [ ] upload_deployment_package with inline credentials
+  - [ ] generate_storage_sas_link with inline credentials
+- [ ] **Project Persistence**:
+  - [ ] First use with full credentials registers project
+  - [ ] Second use with just projectName works
+  - [ ] Projects persist across multiple tool calls
+  - [ ] Projects remain in memory during session
+- [ ] **Project Switching**:
+  - [ ] Switch between projects using names
+  - [ ] Correct credentials used for each project
+  - [ ] No credential leakage between projects
+
+### 2.2 Multi-Project Workflows
+- [ ] **Scenario: Managing Multiple Environments**:
+  1. Add "Production" project with inline credentials
+  2. Add "Staging" project with inline credentials
+  3. Add "Development" project with inline credentials
+  4. List all projects - should show 3
+  5. Deploy from Dev to Staging using project names
+  6. Deploy from Staging to Prod using project names
+- [ ] **Scenario: Project Updates**:
+  1. Add project with initial credentials
+  2. Update same project with new API key
+  3. Verify new credentials are used
+  4. Old credentials should be replaced
+
+## 3. Database Operations
+
+### 3.1 export_database
 - [ ] **Basic Tests**:
   - [ ] Export epicms from Integration
   - [ ] Export epicms from Preproduction
@@ -463,9 +521,9 @@ jaxon-optimizely-dxp-mcp
 | Security | 6 | 4 | 2 | 0 | Path traversal concerns |
 | Integration | 0 | 0 | 0 | 3 | Not tested |
 
-**Test Date**: 2025-08-13
+**Test Date**: 2025-08-14
 **Tester**: Automated Testing & Manual Verification
-**MCP Version**: 1.5.1 (local development)
+**MCP Version**: 1.7.0 (latest release)
 **Node Version**: v22.16.0
 **PowerShell Version**: 7.2.1
 **Operating System**: macOS Darwin 23.6.0
@@ -481,10 +539,10 @@ _Add any notable findings, issues, or suggestions here during testing._
 
 | ID | Tool | Description | Severity | Status | Notes |
 |----|------|-------------|----------|---------|-------|
-| B001 | list_deployments | Environment names showing as "Unknown" instead of actual names | 🟠 High | ⏳ Pending | Deployment info missing environment details |
+| B001 | list_deployments | Environment names showing as "Unknown" instead of actual names | 🟠 High | ✅ Fixed v1.5.1 | Deployment info missing environment details |
 | B002 | get_deployment_status | Generic error for invalid deployment ID instead of specific message | 🟡 Medium | ⏳ Pending | Should say "Deployment not found" |
-| B003 | analyze_package | PowerShellHelper.executePowerShell is not a function error | 🔴 Critical | ⏳ Pending | Breaking functionality in v1.5.0 |
-| B004 | list_deployments | No response with negative/zero limit values | 🟠 High | ⏳ Pending | Should validate limit > 0 |
+| B003 | analyze_package | PowerShellHelper.executePowerShell is not a function error | 🔴 Critical | ✅ Fixed v1.5.1 | Breaking functionality in v1.5.0 |
+| B004 | list_deployments | No response with negative/zero limit values | 🟠 High | ✅ Fixed v1.5.1 | Should validate limit > 0 |
 | B005 | Project validation | Accepts invalid UUID format for project ID | 🟡 Medium | ⏳ Pending | Shows warning but continues |
 
 **Severity Levels**: 🔴 Critical | 🟠 High | 🟡 Medium | 🟢 Low
@@ -507,7 +565,9 @@ _Add any notable findings, issues, or suggestions here during testing._
 | F001 | Batch Operations | Add batch deployment status checks | 💎 High | 🏕️ Small | 💭 Idea |
 | F002 | Retry Logic | Auto-retry on transient failures | 💰 Medium | ⛰️ Medium | 💭 Idea |
 | F003 | Progress Tracking | Real-time progress for long operations | 💎 High | 🏔️ Large | 💭 Idea |
-| F004 | Credential Caching | Cache validated credentials in memory | 💰 Medium | 🏕️ Small | 💭 Idea |
+| F004 | Dynamic Projects | Auto-register projects from inline credentials | 💎 High | ⛰️ Medium | ✅ Done v1.7.0 |
+| F005 | Project Names | Reference projects by friendly names | 💎 High | 🏕️ Small | ✅ Done v1.7.0 |
+| F006 | No Config Required | Work without pre-configuration | 💎 High | ⛰️ Medium | ✅ Done v1.7.0 |
 
 **Value**: 💎 High | 💰 Medium | 🪙 Low
 **Effort**: 🏔️ Large | ⛰️ Medium | 🏕️ Small

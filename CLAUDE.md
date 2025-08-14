@@ -111,13 +111,27 @@ For packages >100MB:
 
 ### Quick Test
 ```bash
-node test-refactored.js
+# Test basic functionality
+echo '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"1.0.0","capabilities":{},"clientInfo":{"name":"test","version":"1.0.0"}}}' | jaxon-optimizely-dxp-mcp
+
+# Test dynamic project registration (v1.7.0+)
+echo '{"jsonrpc":"2.0","id":2,"method":"tools/call","params":{"name":"get_project_info","arguments":{"projectName":"Test Site","projectId":"test-123","apiKey":"key-456","apiSecret":"secret-789"}}}' | jaxon-optimizely-dxp-mcp
 ```
 
-### Manual Testing
-```bash
-echo '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"1.0.0","capabilities":{},"clientInfo":{"name":"test","version":"1.0.0"}}}' | jaxon-optimizely-dxp-mcp
-```
+### Comprehensive Testing
+See `MCP_TEST_PLAN.md` for full test coverage including:
+- Dynamic project management tests
+- Inline credential provision
+- Multi-project workflows
+- Cross-platform compatibility
+- Security validation
+
+### Testing Priorities (v1.7.0+)
+1. **Critical**: Dynamic project registration and persistence
+2. **High**: Project name resolution across all tools
+3. **High**: Multi-project switching without credential leakage
+4. **Medium**: Edge cases (special characters, long names)
+5. **Low**: Performance with many projects (10+)
 
 ## Development Guidelines
 
