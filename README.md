@@ -42,7 +42,7 @@ No more memorizing PowerShell commands or navigating complex portals!
 ### For Claude Code CLI (Easiest)
 ```bash
 # Install and add in one command
-claude mcp add jaxon-optimizely-dxp "npm install -g jaxon-optimizely-dxp-mcp && jaxon-optimizely-dxp-mcp"
+claude mcp add jaxon-optimizely-dxp "npm install -g jaxon-optimizely-dxp-mcp@latest && jaxon-optimizely-dxp-mcp"
 ```
 
 That's it! Now just tell Claude your project details when you need them:
@@ -51,14 +51,14 @@ That's it! Now just tell Claude your project details when you need them:
 ### For Claude Desktop
 ```bash
 # First install globally
-npm install -g jaxon-optimizely-dxp-mcp
+npm install -g jaxon-optimizely-dxp-mcp@latest
 
 # Then add to Claude Desktop config (see Configuration section)
 ```
 
 ### For Other MCP Clients
 ```bash
-npm install -g jaxon-optimizely-dxp-mcp
+npm install -g jaxon-optimizely-dxp-mcp@latest
 ```
 
 ## 📋 What Gets Installed?
