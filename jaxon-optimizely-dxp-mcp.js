@@ -71,6 +71,8 @@ const schemas = {
     
     // Deployment operations
     list_deployments: z.object({
+        limit: z.number().min(1).max(100).optional().default(20),
+        offset: z.number().min(0).optional(),
         projectId: z.string().optional(),
         apiKey: z.string().optional(),
         apiSecret: z.string().optional()
