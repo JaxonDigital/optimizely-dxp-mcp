@@ -37,22 +37,28 @@ No more memorizing PowerShell commands or navigating complex portals!
 - **Time Saving** - Automate repetitive deployment tasks
 - **Error Prevention** - Validates operations before executing
 
-## 🚀 Quick Installation
+## 🚀 Quick Start
 
-### One-Line Install (Recommended)
+### For Claude Code CLI (Easiest)
 ```bash
-npm install -g jaxon-optimizely-dxp-mcp
+# Install and add in one command
+claude mcp add jaxon-optimizely-dxp "npm install -g jaxon-optimizely-dxp-mcp && jaxon-optimizely-dxp-mcp"
 ```
 
-**That's it!** The installer will:
-- ✅ Check for required dependencies
-- ✅ Guide you through any missing installations
-- ✅ Verify everything is working
+That's it! Now just tell Claude your project details when you need them:
+- "Deploy Integration to Preproduction for project MyWebsite with ID abc-123, key xxx, secret yyy"
 
-### Check Dependencies
-After installation, verify dependencies:
+### For Claude Desktop
 ```bash
-npx jaxon-optimizely-dxp-mcp check-deps
+# First install globally
+npm install -g jaxon-optimizely-dxp-mcp
+
+# Then add to Claude Desktop config (see Configuration section)
+```
+
+### For Other MCP Clients
+```bash
+npm install -g jaxon-optimizely-dxp-mcp
 ```
 
 ## 📋 What Gets Installed?
@@ -81,19 +87,32 @@ pwsh -Command "Install-Module -Name EpiCloud -Force"
 ```
 </details>
 
-## 🔑 Your Optimizely Credentials
+## 🔑 Using Your Optimizely Credentials
 
-You'll need these from your DXP Portal:
-- Project ID (UUID format)
-- API Key
-- API Secret
+### No Configuration Required!
+You can use the MCP without any configuration by providing credentials directly:
 
-Don't have them yet? No problem! Install first, configure later.
+```
+"List deployments for project 'Production Site' with ID abc-123, key xxx, secret yyy"
+```
+
+The MCP will remember projects you use and you can refer to them by name later:
+```
+"Deploy on Production Site"
+```
+
+### What You'll Need (When Ready)
+- **Project Name** - A friendly name like "Production Site" or "Dev Environment"
+- **Project ID** - UUID from your DXP Portal
+- **API Key** - From your DXP Portal
+- **API Secret** - From your DXP Portal
 
 
-## 🔧 Configuration
+## 🔧 Configuration (Optional)
 
 ### For Claude Desktop
+
+You can pre-configure projects if you want, but it's not required!
 
 #### Step 1: Find Your Config File
 
@@ -159,17 +178,34 @@ Consult your MCP client's documentation for specific configuration instructions.
 
 ## 💡 How to Use
 
-Once configured, just talk to Claude naturally!
-- "List my recent deployments"
-- "Deploy Integration to Preproduction"
-- "Export the Production database"
+### Without Any Configuration
+Just provide your project details when needed:
+```
+"Deploy Integration to Preproduction for project 'My Website' with ID abc-123, key xxx, secret yyy"
+```
 
-- "Copy content from Production to Preproduction"
-- "Check deployment status"
-- "Generate a storage SAS link"
+After using a project once, refer to it by name:
+```
+"List deployments for My Website"
+"Deploy on My Website"
+```
 
-### Multiple Projects
-Need to manage multiple projects? Check out the [Multi-Project Configuration Guide](MULTI_PROJECT_CONFIG.md) for advanced setups.
+### With Pre-Configuration
+If you've configured credentials:
+```
+"List my recent deployments"
+"Deploy Integration to Preproduction"
+"Export the Production database"
+```
+
+### Managing Multiple Projects
+```
+"List all projects"  # See all projects you've used
+"Switch to Production Site"  # Switch active project
+"Deploy on Dev Environment"  # Use specific project
+```
+
+For advanced configuration options, see the [Multi-Project Configuration Guide](MULTI_PROJECT_CONFIG.md).
 
 ## 🛠️ Available Operations
 

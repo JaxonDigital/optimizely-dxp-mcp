@@ -52,7 +52,9 @@ const schemas = {
     // Project management
     get_project_info: z.object({
         projectId: z.string().optional(),
-        projectName: z.string().optional()
+        projectName: z.string().optional(),
+        apiKey: z.string().optional(),
+        apiSecret: z.string().optional()
     }),
     
     list_projects: z.object({}),
@@ -61,6 +63,7 @@ const schemas = {
     export_database: z.object({
         environment: z.enum(['Integration', 'Preproduction', 'Production']),
         databaseName: z.enum(['epicms', 'epicommerce']),
+        projectName: z.string().optional(),
         projectId: z.string().optional(),
         apiKey: z.string().optional(),
         apiSecret: z.string().optional()
@@ -68,6 +71,7 @@ const schemas = {
     
     check_export_status: z.object({
         exportId: z.string(),
+        projectName: z.string().optional(),
         projectId: z.string().optional(),
         environment: z.enum(['Integration', 'Preproduction', 'Production']),
         databaseName: z.enum(['epicms', 'epicommerce']),
@@ -79,6 +83,7 @@ const schemas = {
     list_deployments: z.object({
         limit: z.number().min(1).max(100).optional().default(20),
         offset: z.number().min(0).optional(),
+        projectName: z.string().optional(),
         projectId: z.string().optional(),
         apiKey: z.string().optional(),
         apiSecret: z.string().optional()
@@ -93,6 +98,7 @@ const schemas = {
         includeDatabase: z.boolean().optional(),
         directDeploy: z.boolean().optional().default(false),
         useMaintenancePage: z.boolean().optional().default(false),
+        projectName: z.string().optional(),
         projectId: z.string().optional(),
         apiKey: z.string().optional(),
         apiSecret: z.string().optional()
@@ -100,6 +106,7 @@ const schemas = {
     
     get_deployment_status: z.object({
         deploymentId: z.string(),
+        projectName: z.string().optional(),
         projectId: z.string().optional(),
         apiKey: z.string().optional(),
         apiSecret: z.string().optional()
@@ -107,6 +114,7 @@ const schemas = {
     
     complete_deployment: z.object({
         deploymentId: z.string(),
+        projectName: z.string().optional(),
         projectId: z.string().optional(),
         apiKey: z.string().optional(),
         apiSecret: z.string().optional()
@@ -114,6 +122,7 @@ const schemas = {
     
     reset_deployment: z.object({
         deploymentId: z.string(),
+        projectName: z.string().optional(),
         projectId: z.string().optional(),
         apiKey: z.string().optional(),
         apiSecret: z.string().optional()
@@ -122,6 +131,7 @@ const schemas = {
     // Storage operations
     list_storage_containers: z.object({
         environment: z.enum(['Integration', 'Preproduction', 'Production']),
+        projectName: z.string().optional(),
         projectId: z.string().optional(),
         apiKey: z.string().optional(),
         apiSecret: z.string().optional()
@@ -130,6 +140,7 @@ const schemas = {
     generate_storage_sas_link: z.object({
         environment: z.enum(['Integration', 'Preproduction', 'Production']),
         containerName: z.string(),
+        projectName: z.string().optional(),
         projectId: z.string().optional(),
         permissions: z.enum(['Read', 'Write', 'Delete', 'List']).optional().default('Read'),
         expiryHours: z.number().optional().default(24),
@@ -141,6 +152,7 @@ const schemas = {
     upload_deployment_package: z.object({
         environment: z.enum(['Integration', 'Preproduction', 'Production']),
         packagePath: z.string(),
+        projectName: z.string().optional(),
         projectId: z.string().optional(),
         apiKey: z.string().optional(),
         apiSecret: z.string().optional()
@@ -150,6 +162,7 @@ const schemas = {
         sourceEnvironment: z.enum(['Integration', 'Preproduction', 'Production']),
         targetEnvironment: z.enum(['Integration', 'Preproduction', 'Production']),
         packagePath: z.string(),
+        projectName: z.string().optional(),
         projectId: z.string().optional(),
         directDeploy: z.boolean().optional().default(true),
         apiKey: z.string().optional(),
@@ -159,6 +172,7 @@ const schemas = {
     // Logging operations
     get_edge_logs: z.object({
         environment: z.enum(['Integration', 'Preproduction', 'Production']).optional(),
+        projectName: z.string().optional(),
         projectId: z.string().optional(),
         hours: z.number().optional().default(1),
         apiKey: z.string().optional(),
@@ -169,6 +183,7 @@ const schemas = {
     copy_content: z.object({
         sourceEnvironment: z.enum(['Integration', 'Preproduction', 'Production']),
         targetEnvironment: z.enum(['Integration', 'Preproduction', 'Production']),
+        projectName: z.string().optional(),
         projectId: z.string().optional(),
         apiKey: z.string().optional(),
         apiSecret: z.string().optional()
@@ -187,6 +202,7 @@ const schemas = {
     
     generate_sas_upload_url: z.object({
         environment: z.enum(['Integration', 'Preproduction', 'Production']),
+        projectName: z.string().optional(),
         projectId: z.string().optional(),
         apiKey: z.string().optional(),
         apiSecret: z.string().optional()
@@ -367,6 +383,35 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             }],
             isError: true
         };
+    }
+    
+    // Auto-register project when credentials are provided inline (BEFORE credential injection)
+    // This ensures projects are saved even when used with get_project_info
+    if (validatedArgs.projectName && validatedArgs.projectId && 
+        validatedArgs.apiKey && validatedArgs.apiSecret) {
+        // Check if this is a new project or update
+        const existingProjects = ProjectTools.getConfiguredProjects();
+        const isNewProject = !existingProjects.find(p => 
+            p.id === validatedArgs.projectId || 
+            p.name === validatedArgs.projectName
+        );
+        
+        // Add or update the project
+        ProjectTools.addProject({
+            name: validatedArgs.projectName,
+            id: validatedArgs.projectId,
+            apiKey: validatedArgs.apiKey,
+            apiSecret: validatedArgs.apiSecret,
+            environments: ['Integration', 'Preproduction', 'Production'],
+            isDefault: false
+        });
+        
+        // Log registration for debugging (to stderr)
+        if (isNewProject) {
+            console.error(`Registered new project: ${validatedArgs.projectName}`);
+        } else {
+            console.error(`Updated project: ${validatedArgs.projectName}`);
+        }
     }
     
     // Handle project switching and credential injection
