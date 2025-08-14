@@ -285,11 +285,23 @@ We help businesses leverage AI and modern technology to transform their digital 
 Visit [www.jaxondigital.com](https://www.jaxondigital.com) to learn more.
 
 
-## 🆘 Need Help?
+## 🆘 Support & Help
 
-- 📋 **Report Issues**: [GitHub Issues](https://github.com/jaxondigital/jaxon-optimizely-dxp-mcp/issues)
-- 📧 **Email Us**: [support@jaxondigital.com](mailto:support@jaxondigital.com)
+### Need Assistance?
+We're here to help! Contact Jaxon Digital's support team:
+
+- 📧 **Email Support**: [hello@jaxondigital.com](mailto:hello@jaxondigital.com)
+- 📋 **Report Bugs**: [GitHub Issues](https://github.com/jaxondigital/jaxon-optimizely-dxp-mcp/issues)
+- 💬 **General Questions**: [hello@jaxondigital.com](mailto:hello@jaxondigital.com)
 - 🌐 **Website**: [www.jaxondigital.com](https://www.jaxondigital.com)
+
+### Common Issues
+- **Permission errors**: Try using `sudo npm install -g` or use a Node version manager
+- **PowerShell not found**: Install PowerShell Core (`pwsh`)
+- **Authentication failures**: Verify your API keys and project ID
+
+### Enterprise Support
+For enterprise support plans and custom integrations, contact us at [hello@jaxondigital.com](mailto:hello@jaxondigital.com)
 
 ## 📄 License
 

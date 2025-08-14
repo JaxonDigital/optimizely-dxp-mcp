@@ -69,6 +69,8 @@ const schemas = {
     
     list_projects: z.object({}),
     
+    get_support: z.object({}),
+    
     // Database operations
     export_database: z.object({
         environment: z.enum(['Integration', 'Preproduction', 'Production']),
@@ -298,6 +300,7 @@ function handleProjectInfoLegacy() {
 const commandHandlers = {
     'get_project_info': handleProjectInfo,
     'list_projects': (args) => ProjectTools.listProjects(args),
+    'get_support': (args) => ProjectTools.handleGetSupport(args),
     'export_database': (args) => DatabaseTools.handleExportDatabase(args),
     'check_export_status': (args) => DatabaseTools.handleCheckExportStatus(args),
     'list_deployments': (args) => DeploymentTools.handleListDeployments(args),
