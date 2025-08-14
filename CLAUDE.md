@@ -39,8 +39,8 @@ Built by Jaxon Digital - Optimizely Gold Partner
 ## Available Tools
 
 ### Core Operations (19 tools)
-1. **get_project_info** - Display project configuration (supports specific project query)
-2. **list_projects** - List all configured projects (NEW in v1.6.0)
+1. **get_project_info** - Display project configuration or register new project
+2. **list_projects** - List all configured and dynamically added projects
 3. **export_database** - Export database from environment
 4. **check_export_status** - Check database export status
 5. **list_deployments** - List all deployments (supports limit: 1-100)
@@ -362,9 +362,26 @@ OPTIMIZELY_API_SECRET=your-api-secret-here
 
 **Note**: `.env` files are gitignored for security
 
-## Latest Updates (v1.6.0 - Released 2025-08-14)
+## Latest Updates (v1.7.0 - Released 2025-08-14)
 
-### Multi-Project Management
+### Dynamic Project Management
+- **Inline Credentials**: Provide project details directly in commands
+- **Auto-Registration**: Projects automatically saved when credentials provided
+- **Name-Based Access**: Reference projects by friendly names after first use
+- **No Configuration Required**: Start using immediately without setup
+- **Project Persistence**: Projects remain available during session
+
+### Usage Examples
+```
+# First use with full credentials
+"Deploy for project 'Production Site' with ID abc-123, key xxx, secret yyy"
+
+# Subsequent uses - just the name
+"List deployments for Production Site"
+"Deploy on Production Site"
+```
+
+### Multi-Project Management (v1.6.0 features)
 - Added `list_projects` tool to show all configured projects
 - Enhanced `get_project_info` to support specific project queries
 - Support for `OPTIMIZELY_PROJECTS` JSON array configuration
