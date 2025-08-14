@@ -46,6 +46,16 @@ const {
     DeploymentHelperTools 
 } = require(path.join(libPath, 'tools'));
 const ProjectTools = require(path.join(libPath, 'tools', 'project-tools'));
+const VersionChecker = require(path.join(libPath, 'version-check'));
+
+// Check for updates on startup (async, non-blocking)
+(async () => {
+    const updateInfo = await VersionChecker.checkForUpdates();
+    const notification = VersionChecker.formatUpdateNotification(updateInfo);
+    if (notification) {
+        console.error(notification);
+    }
+})();
 
 // Define Zod schemas for each tool
 const schemas = {
