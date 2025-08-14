@@ -3,11 +3,12 @@
 ## Test Environment Setup
 
 ### Prerequisites
-- [ ] Verify installed MCP version: `npm list -g jaxon-optimizely-dxp-mcp` (Current: v1.7.0)
+- [ ] Verify installed MCP version: `npm list -g jaxon-optimizely-dxp-mcp` (Current: v1.7.5)
 - [ ] Verify PowerShell Core installed: `pwsh --version`
 - [ ] Verify EpiCloud module available: `pwsh -c "Get-Module -ListAvailable EpiCloud"`
 - [ ] Verify Node.js version: `node --version` (should be v18+)
 - [ ] Check Claude Desktop is using global package (not local dev)
+- [ ] Verify update notification appears for older versions
 
 ### Test Credentials
 - [ ] Prepare test project with valid API credentials
@@ -324,7 +325,77 @@
 - [ ] 500 Internal Server Error
 - [ ] 503 Service Unavailable
 
-## 9. Cross-Platform Considerations
+## 9. Support & Help Features (v1.7.4+)
+
+### 9.1 get_support Tool
+- [ ] **Basic Tests**:
+  - [ ] Call get_support with no parameters
+  - [ ] Verify email shows as support@jaxondigital.com
+  - [ ] Verify GitHub issues link is present
+  - [ ] Verify website link is included
+- [ ] **Content Verification**:
+  - [ ] Support categories listed
+  - [ ] Enterprise support mentioned
+  - [ ] Contact methods clear
+
+### 9.2 Error Message Support
+- [ ] **Error Scenarios**:
+  - [ ] Generic errors show support email
+  - [ ] Authentication errors show support
+  - [ ] PowerShell errors include support
+  - [ ] Network errors suggest contacting support
+- [ ] **Format Verification**:
+  - [ ] Support email appears at end of errors
+  - [ ] Email is properly formatted
+  - [ ] Message is helpful not intrusive
+
+## 10. Version Update Notifications (v1.7.3+)
+
+### 10.1 Update Check
+- [ ] **Basic Tests**:
+  - [ ] Older version shows update notification
+  - [ ] Current version shows no notification
+  - [ ] Notification appears on startup
+  - [ ] Shows current and latest versions
+- [ ] **Network Scenarios**:
+  - [ ] No internet - fails gracefully
+  - [ ] Slow connection - 3 second timeout works
+  - [ ] NPM registry down - no error shown
+- [ ] **Format Verification**:
+  - [ ] Box formatting displays correctly
+  - [ ] Update command is accurate
+  - [ ] Version numbers aligned
+
+## 11. Enhanced Deployment Information (v1.7.1+)
+
+### 11.1 Deployment Details
+- [ ] **Basic Information**:
+  - [ ] Progress percentage shown
+  - [ ] Duration calculated correctly
+  - [ ] Timeline with start/end times
+- [ ] **Configuration Details**:
+  - [ ] Apps deployed (cms, commerce)
+  - [ ] Blob inclusion flag
+  - [ ] Database inclusion flag
+  - [ ] Maintenance page status
+  - [ ] Zero downtime mode
+- [ ] **Rollback Information**:
+  - [ ] Reset parameters shown
+  - [ ] Database rollback option
+  - [ ] Validate before swap setting
+  - [ ] Auto-complete flag
+
+### 11.2 Error/Warning Display
+- [ ] **Deployment Errors**:
+  - [ ] Error count shown in list view
+  - [ ] Full errors in detailed view
+  - [ ] Errors properly formatted
+- [ ] **Deployment Warnings**:
+  - [ ] Warning count in list view
+  - [ ] Full warnings in detailed view
+  - [ ] Warnings clearly marked
+
+## 12. Cross-Platform Considerations
 
 ### 9.1 Windows vs macOS
 - [ ] **Path Handling**:

@@ -228,6 +228,29 @@ npm install -g jaxon-optimizely-dxp-mcp@latest
 ln -s ../../scripts/check-secrets.sh .git/hooks/pre-commit
 ```
 
+## Testing Session Results (2025-08-14)
+
+### Successfully Tested ✅
+- Deployment rollback/reset functionality
+- Enhanced deployment information display
+- Database exports (epicms & epicommerce)
+- Storage container operations & SAS links
+- Content copy between environments (11 minutes for Cambro)
+- Multi-project switching (VHB, Christie, Cambro)
+- Package analysis tools
+- Error handling with invalid inputs
+- Support tool functionality
+
+### Bugs Fixed ✅
+- **split_package**: Fixed null reference error (v1.7.1)
+- **generate_sas_upload_url**: Now provides helpful guidance instead of failing (v1.7.1)
+- **Deployment formatters**: Enhanced with full details display (v1.7.1)
+
+### Known Limitations
+- Edge logs require beta access (not available for most clients)
+- Package containers not exposed via storage API (use upload_deployment_package)
+- split_package PowerShell script needs further refinement
+
 ## Common Issues & Fixes (v1.5.1+)
 
 ### ✅ FIXED: analyze_package PowerShellHelper.executePowerShell error
@@ -376,9 +399,27 @@ OPTIMIZELY_API_SECRET=your-api-secret-here
 
 **Note**: `.env` files are gitignored for security
 
-## Latest Updates (v1.7.0 - Released 2025-08-14)
+## Latest Updates (v1.7.5 - Released 2025-08-14)
 
-### Dynamic Project Management
+### Support & Help Features (v1.7.4-1.7.5)
+- **get_support Tool**: Easy access to all support options
+- **Error Enhancement**: All errors now include support@jaxondigital.com
+- **Documentation**: Comprehensive support section in README
+- **Enterprise Support**: Information about priority support plans
+
+### Version Update Notifications (v1.7.3)
+- **Automatic Check**: Checks npm for updates on startup
+- **Visual Notification**: Beautiful boxed notification when updates available
+- **Non-Intrusive**: 3-second timeout, fails gracefully
+- **Clear Instructions**: Shows exact update command
+
+### Enhanced Deployment Information (v1.7.1-1.7.2)
+- **Full Details**: Progress, duration, timeline, configuration
+- **Error/Warning Display**: Shows deployment errors and warnings
+- **Rollback Information**: Reset parameters for rollback deployments
+- **Rich List View**: More info when viewing fewer deployments
+
+### Dynamic Project Management (v1.7.0)
 - **Inline Credentials**: Provide project details directly in commands
 - **Auto-Registration**: Projects automatically saved when credentials provided
 - **Name-Based Access**: Reference projects by friendly names after first use
@@ -436,6 +477,10 @@ OPTIMIZELY_API_SECRET=your-api-secret-here
 - Claude Desktop workspace issues may require support intervention
 
 ## Version History
+- **v1.7.5** - Support email updated to support@jaxondigital.com
+- **v1.7.4** - Added comprehensive support features and get_support tool
+- **v1.7.3** - Automatic update notifications on startup
+- **v1.7.1-1.7.2** - Enhanced deployment information display
 - **v1.7.0** - Dynamic project management with inline credentials
 - **v1.6.0** - Built-in project list management, multi-project support
 - **v1.5.1** - Critical bug fixes for deployment and package analysis
