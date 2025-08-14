@@ -1,7 +1,5 @@
 # Multi-Project Configuration Guide
 
-**Version 1.5.1** - Latest Updates December 2024
-
 The Optimizely DXP MCP Server supports managing multiple projects through a **single MCP instance**! Configure all your projects once and switch between them seamlessly during conversations.
 
 ## 🎯 Key Features
@@ -11,9 +9,6 @@ The Optimizely DXP MCP Server supports managing multiple projects through a **si
 - **Per-Project Credentials**: Different API keys for each project
 - **Dynamic Switching**: Change projects mid-conversation
 - **Environment Control**: Limit access per project
-- **Security Protection**: Automatic masking of secrets in all outputs
-- **Large File Support**: Handle packages >100MB with smart strategies
-- **Claude Code CLI Support**: Works with both Claude Desktop and CLI
 
 ## 📋 Configuration Examples
 
@@ -176,9 +171,6 @@ AI:
 1. **Environment Restrictions**: Use `OPTIMIZELY_ALLOWED_ENVIRONMENTS` to limit access
 2. **Separate Credentials**: Use different API keys for production vs development
 3. **Read-Only Access**: Create API keys with limited permissions for safer operations
-4. **Automatic Secret Masking**: All API keys and secrets are automatically masked in outputs (v1.5+)
-5. **Git Pre-commit Hooks**: Available to prevent accidental secret commits
-6. **Credential Validation**: Built-in validation for proper UUID and API key formats
 
 ## 🎯 Best Practices
 
@@ -244,50 +236,3 @@ AI: [Shows status for all three deployments across projects]
 
 Choose the single MCP instance approach and manage your entire Optimizely portfolio with ease!
 
-## 🆕 What's New in v1.5.1
-
-### Security Enhancements
-- **Automatic Secret Protection**: All API keys and secrets are masked in logs and error messages
-- **Credential Validation**: Validates UUID formats and API key structures
-- **Git Pre-commit Hooks**: Optional hooks to prevent accidental secret commits
-
-### Large File Handling
-- **Package Analysis**: `analyze_package` tool recommends optimal upload strategy
-- **SAS URL Generation**: Direct upload for packages >100MB
-- **Package Splitting**: Break large packages into manageable chunks
-- **Smart Upload Strategies**: Automatic selection based on file size
-
-### Bug Fixes
-- ✅ Fixed deployment environment names showing as "Unknown"
-- ✅ Fixed analyze_package PowerShell execution errors
-- ✅ Fixed invalid limit values causing no response
-- ✅ Added missing verification status icons
-- ✅ Enhanced error messages with better guidance
-
-### Claude Code CLI Support
-The MCP server now works seamlessly with Claude Code CLI:
-```bash
-# Add the MCP globally
-claude mcp add jaxon-optimizely-dxp "jaxon-optimizely-dxp-mcp"
-
-# Use in Claude Code
-claude "Use jaxon-optimizely-dxp to list deployments"
-```
-
-## 📝 Environment File Support (.env)
-
-New in v1.5+! You can now use `.env` files for local development:
-
-```bash
-# Create a .env file in your project directory
-cat > .env << EOF
-OPTIMIZELY_PROJECT_NAME=MyProject
-OPTIMIZELY_PROJECT_ID=your-project-uuid
-OPTIMIZELY_API_KEY=your-api-key
-OPTIMIZELY_API_SECRET=your-api-secret
-EOF
-
-# The MCP will automatically load credentials from .env
-```
-
-**Note**: `.env` files are automatically gitignored for security.

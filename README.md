@@ -223,13 +223,6 @@ To enable:
 3. Ask "What MCP tools are available?"
 4. Verify your client supports MCP protocol
 
-### Recent Issues Fixed (v1.5.1)
-- ✅ Fixed deployment environment names showing as "Unknown"
-- ✅ Fixed analyze_package PowerShell execution errors
-- ✅ Fixed invalid limit values causing no response
-- ✅ Added missing verification status icons
-- ✅ Enhanced security with automatic secret masking
-
 ## 🏢 About Jaxon Digital
 
 **Jaxon Digital** is a certified **Optimizely Gold Partner** specializing in:
@@ -243,24 +236,9 @@ We help businesses leverage AI and modern technology to transform their digital 
 
 Visit [www.jaxondigital.com](https://www.jaxondigital.com) to learn more.
 
-## 📦 Version History
+## 📦 Latest Version
 
-### v1.5.1 (Latest - December 2024)
-- ✅ Fixed critical bugs in deployment status display
-- ✅ Enhanced package analysis for large files
-- ✅ Improved error handling with secret masking
-- ✅ Added comprehensive validation for all parameters
-
-### v1.5.0 (December 2024)
-- 🔐 Security enhancements with automatic secret protection
-- 📦 Large file handling (analyze, split, SAS upload)
-- 🏗️ Modular architecture refactoring
-- 🔧 PowerShell command builder for safer operations
-
-### v1.4.x
-- Initial SDK migration for Claude compatibility
-- Multi-project support
-- Smart deployment defaults
+**v1.5.1** - Enhanced security, large file handling, and improved reliability for all your Optimizely DXP operations.
 
 ## 🆘 Need Help?
 
