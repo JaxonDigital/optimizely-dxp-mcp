@@ -1,32 +1,21 @@
 # Changelog
 
-## [1.6.0] - December 2024
-
-### New Features
-- Built-in project list management with `list_projects` tool
-- Enhanced `get_project_info` to show specific projects
-- Support for `OPTIMIZELY_PROJECTS` environment variable for multi-project configuration
-- Automatic project switching using project names in commands
-- Smart credential resolution across configured projects
-
-### Improvements
-- Simplified multi-project configuration
-- Better project discovery and management
-- Enhanced credential handling for project switching
-
-## [1.5.1] - December 2024
+## Current Version
 
 ### Features
+- Built-in project list management
 - Enhanced security with automatic secret masking
 - Large file handling for deployment packages
 - Multi-project support with seamless switching
-- Improved error handling and user feedback
+- Smart deployment defaults (upward = code, downward = content)
+- Comprehensive error handling and user feedback
 
-### Improvements
-- Modular architecture for better maintainability
-- PowerShell command builder for safer operations
-- Visual status indicators for deployments
-- Support for .env files in local development
+### Capabilities
+- 19 tools for complete DXP management
+- Project switching using names or IDs
+- Support for multiple configuration methods
+- Automatic dependency checking on installation
+- Modular architecture for maintainability
 
 ---
 

@@ -11,7 +11,7 @@ The Optimizely DXP MCP Server supports managing multiple projects through differ
 
 ## 📋 Configuration Options
 
-### Option 1: Multiple Projects in One Instance (NEW - v1.6.0) 🎉
+### Option 1: Multiple Projects in One Instance (RECOMMENDED)
 Configure all your projects in a single MCP instance:
 
 ```json
@@ -101,7 +101,7 @@ Configure a default project and override credentials as needed:
 
 ## 💬 Usage Examples
 
-### List All Projects (NEW!)
+### List All Projects
 ```
 User: "List projects"
 AI: Shows all configured projects with their names and IDs
@@ -196,7 +196,7 @@ The MCP server will automatically load these when run from the same directory.
 
 **Important**: Never commit `.env` files to version control!
 
-## ✨ New Features (v1.6.0)
+## ✨ Features
 
 ### Built-in Project Management
 - **list_projects** - View all configured projects

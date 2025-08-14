@@ -183,7 +183,7 @@ Your AI assistant can help you with all these tasks:
 - Upload new deployment packages
 - Smart deployment defaults (upward = code, downward = content)
 
-### Package Management (New in v1.5+)
+### Package Management
 - Analyze packages for optimal upload strategy
 - Split large packages (>100MB) into chunks
 - Generate SAS URLs for direct upload
@@ -248,9 +248,6 @@ We help businesses leverage AI and modern technology to transform their digital 
 
 Visit [www.jaxondigital.com](https://www.jaxondigital.com) to learn more.
 
-## 📦 Latest Version
-
-**v1.5.1** - Enhanced security, large file handling, and improved reliability for all your Optimizely DXP operations.
 
 ## 🆘 Need Help?
 
