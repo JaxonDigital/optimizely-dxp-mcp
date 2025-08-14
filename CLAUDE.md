@@ -422,6 +422,7 @@ OPTIMIZELY_API_SECRET=your-api-secret-here
 - Claude Desktop workspace issues may require support intervention
 
 ## Version History
+- **v1.7.0** - Dynamic project management with inline credentials
 - **v1.6.0** - Built-in project list management, multi-project support
 - **v1.5.1** - Critical bug fixes for deployment and package analysis
 - **v1.5.0** - Security enhancements, modular refactoring, .env support
@@ -431,9 +432,34 @@ OPTIMIZELY_API_SECRET=your-api-secret-here
 
 ## Important Development Guidelines
 
+### Versioning Strategy (Semver)
+**IMPORTANT: Follow semantic versioning strictly from v1.7.0 onwards**
+
+- **PATCH (1.7.x)**: Bug fixes, documentation updates, dependency updates
+  - Examples: Fix typo, update README, fix error handling
+  - Command: `npm version patch`
+  
+- **MINOR (1.x.0)**: New features, non-breaking changes
+  - Examples: Add new tool, enhance existing features, add new options
+  - Command: `npm version minor`
+  
+- **MAJOR (x.0.0)**: Breaking changes
+  - Examples: Remove tools, change API signatures, require new dependencies
+  - Command: `npm version major`
+
+**Current Status**: v1.7.0 - Stable release, no known users yet
+
 ### Repository Management
 - **ALWAYS commit changes to both repos when necessary**
 - Private repo is the source of truth
 - Use `./scripts/sync-public-repo.sh` to sync to public
 - Never manually push sensitive files to public repo
-- always publish to npm every time we update the public repo and vice versa
+- Always publish to npm every time we update the public repo and vice versa
+
+### Release Process
+1. Make changes in private repo
+2. Test thoroughly
+3. Update version: `npm version [patch|minor|major]`
+4. Commit and push to private repo
+5. Run `./scripts/sync-public-repo.sh` (answer 'y' to push)
+6. Publish to npm: `npm publish`
