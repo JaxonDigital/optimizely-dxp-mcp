@@ -38,25 +38,26 @@ Built by Jaxon Digital - Optimizely Gold Partner
 
 ## Available Tools
 
-### Core Operations (18 tools)
-1. **get_project_info** - Display project configuration
-2. **export_database** - Export database from environment
-3. **check_export_status** - Check database export status
-4. **list_deployments** - List all deployments (supports limit: 1-100)
-5. **start_deployment** - Start new deployment
-6. **get_deployment_status** - Get deployment status
-7. **complete_deployment** - Complete deployment in verification
-8. **reset_deployment** - Rollback deployment
-9. **list_storage_containers** - List storage containers
-10. **generate_storage_sas_link** - Generate SAS links
-11. **upload_deployment_package** - Upload deployment package
-12. **deploy_package_and_start** - Combined upload and deploy
-13. **get_edge_logs** - Get CDN logs (requires enablement)
-14. **copy_content** - Copy content between environments
-15. **analyze_package** - Analyze package for upload strategy
-16. **prepare_deployment_package** - Create optimized packages
-17. **generate_sas_upload_url** - Get SAS URL for direct upload
-18. **split_package** - Split large packages into chunks
+### Core Operations (19 tools)
+1. **get_project_info** - Display project configuration (supports specific project query)
+2. **list_projects** - List all configured projects (NEW in v1.6.0)
+3. **export_database** - Export database from environment
+4. **check_export_status** - Check database export status
+5. **list_deployments** - List all deployments (supports limit: 1-100)
+6. **start_deployment** - Start new deployment
+7. **get_deployment_status** - Get deployment status
+8. **complete_deployment** - Complete deployment in verification
+9. **reset_deployment** - Rollback deployment
+10. **list_storage_containers** - List storage containers
+11. **generate_storage_sas_link** - Generate SAS links
+12. **upload_deployment_package** - Upload deployment package
+13. **deploy_package_and_start** - Combined upload and deploy
+14. **get_edge_logs** - Get CDN logs (requires enablement)
+15. **copy_content** - Copy content between environments
+16. **analyze_package** - Analyze package for upload strategy
+17. **prepare_deployment_package** - Create optimized packages
+18. **generate_sas_upload_url** - Get SAS URL for direct upload
+19. **split_package** - Split large packages into chunks
 
 ## Key Features
 
@@ -65,15 +66,32 @@ Built by Jaxon Digital - Optimizely Gold Partner
 - **Downward** (Prod→Pre/Int): Copies CONTENT
 - Override with deploymentType parameter
 
-### Multi-Project Support
-Configure multiple projects in Claude Desktop:
+### Multi-Project Support (Enhanced in v1.6.0)
+
+#### Method 1: Using OPTIMIZELY_PROJECTS (NEW!)
+Configure all projects in one place:
 ```json
 {
   "mcpServers": {
-    "project1": {
+    "jaxon-optimizely-dxp": {
       "command": "jaxon-optimizely-dxp-mcp",
       "env": {
-        "OPTIMIZELY_PROJECT_NAME": "Project 1",
+        "OPTIMIZELY_PROJECTS": "[{\"name\":\"production\",\"id\":\"abc-123\",\"apiKey\":\"key1\",\"apiSecret\":\"secret1\",\"isDefault\":true},{\"name\":\"development\",\"id\":\"def-456\",\"apiKey\":\"key2\",\"apiSecret\":\"secret2\"}]"
+      }
+    }
+  }
+}
+```
+
+#### Method 2: Individual Environment Variables
+Configure a single project:
+```json
+{
+  "mcpServers": {
+    "jaxon-optimizely-dxp": {
+      "command": "jaxon-optimizely-dxp-mcp",
+      "env": {
+        "OPTIMIZELY_PROJECT_NAME": "My Project",
         "OPTIMIZELY_PROJECT_ID": "...",
         "OPTIMIZELY_API_KEY": "...",
         "OPTIMIZELY_API_SECRET": "..."
@@ -344,7 +362,16 @@ OPTIMIZELY_API_SECRET=your-api-secret-here
 
 **Note**: `.env` files are gitignored for security
 
-## Latest Updates (v1.5.1 - Released 2025-08-13)
+## Latest Updates (v1.6.0 - Released 2025-08-14)
+
+### Multi-Project Management
+- Added `list_projects` tool to show all configured projects
+- Enhanced `get_project_info` to support specific project queries
+- Support for `OPTIMIZELY_PROJECTS` JSON array configuration
+- Automatic project switching using project names
+- Smart credential resolution across projects
+
+## Previous Updates (v1.5.1 - Released 2025-08-13)
 
 ### Critical Bug Fixes
 - Fixed `analyze_package` PowerShellHelper.executePowerShell error
@@ -378,7 +405,17 @@ OPTIMIZELY_API_SECRET=your-api-secret-here
 - Claude Desktop workspace issues may require support intervention
 
 ## Version History
+- **v1.6.0** - Built-in project list management, multi-project support
+- **v1.5.1** - Critical bug fixes for deployment and package analysis
 - **v1.5.0** - Security enhancements, modular refactoring, .env support
 - **v1.4.1** - PowerShell command builder, deployment fixes
 - **v1.3.0** - Initial security measures
 - **v1.2.26** - SDK migration for Claude compatibility
+
+## Important Development Guidelines
+
+### Repository Management
+- **ALWAYS commit changes to both repos when necessary**
+- Private repo is the source of truth
+- Use `./scripts/sync-public-repo.sh` to sync to public
+- Never manually push sensitive files to public repo
