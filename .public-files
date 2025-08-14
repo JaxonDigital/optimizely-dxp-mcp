@@ -16,6 +16,7 @@ package-lock.json
 # Source code
 jaxon-optimizely-dxp-mcp.js
 lib/
+scripts/install-dependencies.js
 
 # NEVER include these files in public repo:
 # - CLAUDE.md (internal development notes)

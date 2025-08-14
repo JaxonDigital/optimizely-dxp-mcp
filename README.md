@@ -37,42 +37,61 @@ No more memorizing PowerShell commands or navigating complex portals!
 - **Time Saving** - Automate repetitive deployment tasks
 - **Error Prevention** - Validates operations before executing
 
-## 📋 Prerequisites
-
-You'll need these installed on your computer:
-
-### 1. PowerShell Core
-- **Mac**: Open Terminal and run: `brew install powershell`
-- **Windows**: Already installed or run: `winget install Microsoft.PowerShell`
-- **Linux**: Run: `sudo apt install -y powershell`
-
-### 2. EpiCloud Module
-Open PowerShell and run:
-```
-Install-Module EpiCloud -Force
-```
-
-### 3. Your Optimizely Credentials (Optional)
-You can set these up now or later:
-- Your Project ID
-- API Key from your DXP Portal
-- API Secret from your DXP Portal
-
-Don't have these yet? No problem! You can still install and your AI assistant will guide you when needed.
-
 ## 🚀 Quick Installation
 
-Install from npm in just one command:
-```
+### One-Line Install (Recommended)
+```bash
 npm install -g jaxon-optimizely-dxp-mcp
 ```
 
-### 📚 Advanced Configuration
-- **[Multi-Project Setup Guide](MULTI_PROJECT_CONFIG.md)** - Manage multiple Optimizely projects
-- **Multiple Environments** - Control access per project
-- **Named Projects** - Use friendly names instead of GUIDs
+**That's it!** The installer will:
+- ✅ Check for required dependencies
+- ✅ Guide you through any missing installations
+- ✅ Verify everything is working
 
-## 🔧 Setup Instructions
+### Check Dependencies
+After installation, verify dependencies:
+```bash
+npx jaxon-optimizely-dxp-mcp check-deps
+```
+
+## 📋 What Gets Installed?
+
+The MCP server requires:
+1. **PowerShell Core** - For running Optimizely commands
+2. **EpiCloud Module** - Optimizely's official PowerShell module
+3. **Node.js 16+** - You already have this if npm works!
+
+Our installer will check for these and provide simple instructions if anything is missing.
+
+### Manual Prerequisites (if automatic install fails)
+
+<details>
+<summary>Click here for manual installation steps</summary>
+
+#### PowerShell Core
+- **Mac**: `brew install powershell`
+- **Windows**: `winget install Microsoft.PowerShell`
+- **Linux**: `sudo apt install -y powershell`
+
+#### EpiCloud Module
+After installing PowerShell:
+```powershell
+pwsh -Command "Install-Module -Name EpiCloud -Force"
+```
+</details>
+
+## 🔑 Your Optimizely Credentials
+
+You'll need these from your DXP Portal:
+- Project ID (UUID format)
+- API Key
+- API Secret
+
+Don't have them yet? No problem! Install first, configure later.
+
+
+## 🔧 Configuration
 
 ### For Claude Desktop
 
@@ -122,7 +141,9 @@ Close and reopen Claude Desktop to load the new configuration.
 
 #### Step 4: Verify It's Working
 
-Ask: "What MCP tools do you have available?" or "Check your Optimizely configuration"
+Ask Claude: "What MCP tools do you have available?" or "Check your Optimizely configuration"
+
+If you see Optimizely tools listed, you're all set! 🎉
 
 ### For Other MCP Clients
 
@@ -138,26 +159,17 @@ Consult your MCP client's documentation for specific configuration instructions.
 
 ## 💡 How to Use
 
-### Single Project (Default)
-Just ask your AI naturally:
+Once configured, just talk to Claude naturally!
 - "List my recent deployments"
 - "Deploy Integration to Preproduction"
 - "Export the Production database"
 
-### Multiple Projects (New!)
-Switch between projects seamlessly:
-- "List deployments for project abc-123"
-- "Deploy on development project"
-- "Copy content on production project"
+- "Copy content from Production to Preproduction"
+- "Check deployment status"
+- "Generate a storage SAS link"
 
-You can override credentials anytime:
-- "Deploy using project: xyz, key: aaa, secret: bbb"
-
-### Check Your Configuration
-Ask your AI anytime:
-- "What project am I using?"
-- "Check my Optimizely configuration"
-- "Show me all configured projects"
+### Multiple Projects
+Need to manage multiple projects? Check out the [Multi-Project Configuration Guide](MULTI_PROJECT_CONFIG.md) for advanced setups.
 
 ## 🛠️ Available Operations
 

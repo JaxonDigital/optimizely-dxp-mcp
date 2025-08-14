@@ -8,7 +8,9 @@
   },
   "scripts": {
     "start": "node jaxon-optimizely-dxp-mcp.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "check-deps": "node scripts/install-dependencies.js",
+    "postinstall": "node scripts/install-dependencies.js || exit 0"
   },
   "keywords": [
     "jaxon",
@@ -42,7 +44,9 @@
   "files": [
     "jaxon-optimizely-dxp-mcp.js",
     "lib/**/*",
+    "scripts/install-dependencies.js",
     "README.md",
-    "LICENSE"
+    "LICENSE",
+    "MULTI_PROJECT_CONFIG.md"
   ]
 }
