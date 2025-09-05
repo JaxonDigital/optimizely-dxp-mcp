@@ -1,0 +1,115 @@
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage/
+
+# nyc test coverage
+.nyc_output
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Test files and packages
+test-*.nupkg
+*.bacpac
+test-*.json
+
+# Sensitive files (API keys, secrets)
+secrets.json
+config/local.json
+mcp-config.json
+.mcp.json
+
+# Build outputs
+dist/
+build/
+
+# Logs
+*.log
+logs/*.nupkg
+.claude/
+
+# Export state persistence (local user data)
+.exports/
+
+# Note: ISSUES.md is tracked in private repo but excluded from public sync
+
+# Development and test files
+test-env-vars.js
+jaxon-mcp-wrapper.sh
+jaxon-optimizely-dxp-mcp-clean.js
+# CLAUDE.md tracked in private repo only
+INSTALL.md
+MCP_CLIENT_CONFIG.md
+mcp-client.js
+quick-test.sh
+setup-claude-config.sh
+*-wrapper.sh
+*-clean.js
+test-*.js
+test-*.sh
+!tests/regression/test-*.js
+
+# Environment files
+.env
+.env.local
+.env.*
+
+# NPM authentication (never commit tokens!)
+.npmrc
+*.nupkg
+deployment-package.zip
+
+# Visual Studio specific files
+.vs/
+*.user
+*.suo
+*.ncb
+*.aps
+*.pdb
+*.vspscc
+*.vssscc
+.builds
+*.pidb
+*.svclog
+*.scc
+*.VC.db
+*.VC.VC.opendb
+
+# Visual Studio 2022+ specific files
+.vs/*/FileContentIndex/
+.vs/*/v17/
+*.vsidx
+ProjectSettings.json
+slnx.sqlite
+VSWorkspaceState.json
