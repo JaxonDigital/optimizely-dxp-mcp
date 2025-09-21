@@ -5,6 +5,17 @@ All notable changes to the Jaxon Optimizely DXP MCP Server will be documented in
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.27.3] - 2025-09-21
+
+### Added
+- **DXP-24 Tool Organization Documentation**: Comprehensive tool catalog and usage guide
+  - Created detailed `TOOL_ORGANIZATION.md` documenting all ~40 MCP tools
+  - Organized tools into 11 functional categories for better discoverability
+  - Added tool selection decision trees ("I want to deploy code", "I need logs", etc.)
+  - Documented best practices and DO/DON'T guidelines
+  - Included consolidation history showing v3.14.3 major cleanup achievements
+  - Provides clear guidance on when to use each tool category
+
 ## [3.27.2] - 2025-09-21
 
 ### Removed
