@@ -27,7 +27,6 @@
 
 #### Priority 3 - Extended Features (Nightly)
 - NLP parsing
-- Azure DevOps integration
 - Log analysis
 - Permission checking
 - Rate limiting

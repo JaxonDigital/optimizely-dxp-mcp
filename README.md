@@ -174,12 +174,6 @@ npm install -g @jaxon-digital/optimizely-dxp-mcp
 # tool usage patterns - all anonymous, no PII collected
 ```
 
-### 9️⃣ CI/CD Integration (Beta)
-```bash
-# Azure DevOps pipeline support
-"deploy azure artifact [URL]"              # Direct from build artifacts
-```
-
 ### 🎯 Smart Features That Save Time
 
 - **🆕 Self-Hosted Azure Support** - Direct integration with Optimizely CMS on Azure storage
