@@ -5,6 +5,16 @@ All notable changes to the Jaxon Optimizely DXP MCP Server will be documented in
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.27.1] - 2025-09-21
+
+### Fixed
+- **DXP-26 Log Preview Bug**: Fixed issue where preview shows files but download claims no logs
+  - Preview mode used `quickCheckLimit` for performance but download re-scanned and found nothing
+  - Now only applies limit in true preview mode (`previewOnly=true`)
+  - Stores `needsRefetch` flag when preview hits limit
+  - Properly refetches all logs when downloading after a limited preview
+  - Ensures consistency between what preview shows and what gets downloaded
+
 ## [3.27.0] - 2025-09-21
 
 ### Fixed
