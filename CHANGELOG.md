@@ -5,6 +5,16 @@ All notable changes to the Jaxon Optimizely DXP MCP Server will be documented in
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.27.2] - 2025-09-21
+
+### Removed
+- **DXP-25 Azure DevOps Tools**: Removed unused Azure DevOps deployment integration
+  - Deleted `lib/tools/azure-devops-tools.js` (27KB file)
+  - Removed `handleDeployAzureArtifact` and `formatAzureArtifactWorkflow` functions from package-tools.js
+  - Cleaned up Azure DevOps references from documentation
+  - No production impact as these tools were not in use
+  - Reduces package size and maintenance burden
+
 ## [3.27.1] - 2025-09-21
 
 ### Fixed
