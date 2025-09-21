@@ -109,6 +109,7 @@ const { getTelemetry } = require(path.join(libPath, 'telemetry'));
 // Hosting type detection and tool filtering (DXP-23)
 const HostingDetector = require(path.join(libPath, 'utils', 'hosting-detector'));
 const ToolAvailabilityMatrix = require(path.join(libPath, 'utils', 'tool-availability-matrix'));
+const ToolFilter = require(path.join(libPath, 'tool-filter'));
 const HostingAwareHelp = require(path.join(libPath, 'tools', 'hosting-aware-help'));
 
 // Initialize telemetry
@@ -1310,7 +1311,7 @@ let server;
 
 // Handler setup function - will be called from main() after server creation
 function setupHandlers(server) {
-    // Handle tools/list request - Filter by environment (DXP-23)
+    // Handle tools/list request - Filter by environment (DXP-23) and user preferences (DXP-42)
     server.setRequestHandler(ListToolsRequestSchema, async () => {
         // Get current project to determine hosting type
         const ProjectTools = require('../lib/tools/project-tools');
@@ -1329,13 +1330,25 @@ function setupHandlers(server) {
             .map(t => t.name);
 
         // Filter tool definitions to only include available tools
-        const filteredTools = toolDefinitions
+        let filteredTools = toolDefinitions
             .filter(tool => availableToolNames.includes(tool.name))
             .map(tool => ({
                 name: tool.name,
                 description: tool.description,
                 inputSchema: zodToJsonSchema(tool.inputSchema)
             }));
+
+        // Apply user-configured tool filter (DXP-42)
+        filteredTools = ToolFilter.filterTools(filteredTools);
+
+        // Log filter summary if in debug mode
+        if (process.env.DEBUG === 'true' || process.env.TOOL_FILTER_DEBUG === 'true') {
+            const filterSummary = ToolFilter.getFilterSummary();
+            if (filterSummary.enabled) {
+                console.error(`[DXP-42] Tool filter active: ${filteredTools.length} tools enabled`);
+                console.error(`[DXP-42] Filter patterns:`, filterSummary.patterns);
+            }
+        }
 
         return {
             tools: filteredTools
@@ -1361,6 +1374,20 @@ function setupHandlers(server) {
     // Handle tools/call request
     server.setRequestHandler(CallToolRequestSchema, async (request) => {
     const { name: toolName, arguments: args } = request.params;
+
+    // DXP-42: Check if tool is enabled
+    if (!ToolFilter.isToolEnabled(toolName)) {
+        const filterSummary = ToolFilter.getFilterSummary();
+        if (filterSummary.enabled) {
+            return {
+                content: [{
+                    type: 'text',
+                    text: `❌ Tool "${toolName}" is not enabled\n\nThis tool has been disabled by the ENABLED_TOOLS configuration.\n\nCurrently enabled patterns: ${filterSummary.patterns.join(', ')}\n\nTo enable this tool, update the ENABLED_TOOLS environment variable.`
+                }],
+                isError: true
+            };
+        }
+    }
 
     // DXP-34: Debug logging for tool name tracking
     if (process.env.DEBUG || process.env.TELEMETRY_DEBUG) {

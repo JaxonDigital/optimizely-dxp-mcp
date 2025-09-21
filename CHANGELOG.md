@@ -5,6 +5,19 @@ All notable changes to the Jaxon Optimizely DXP MCP Server will be documented in
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.28.0] - 2025-09-21
+
+### Added
+- **DXP-42 Customizable Tools**: Filter MCP tools via ENABLED_TOOLS environment variable
+  - Created new `ToolFilter` module for flexible tool enabling/disabling
+  - Supports wildcard patterns (* for any characters, ? for single character)
+  - Allows focusing on specific tool categories (e.g., "deploy*,status" for deployment tools only)
+  - Reduces AI assistant confusion by hiding irrelevant tools
+  - Created comprehensive `CUSTOMIZABLE_TOOLS.md` documentation
+  - Added 11 test cases covering all filtering scenarios
+  - Debug mode available with TOOL_FILTER_DEBUG=true
+  - No performance impact - filtering happens once at startup
+
 ## [3.27.3] - 2025-09-21
 
 ### Added
