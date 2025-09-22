@@ -1,6 +1,6 @@
 {
   "name": "@jaxon-digital/optimizely-dxp-mcp",
-  "version": "3.28.7",
+  "version": "3.28.8",
   "description": "Streamlined automation for Optimizely DXP - deploy, monitor, and manage environments with transparent, direct tools",
   "main": "dist/index.js",
   "bin": {

@@ -1360,7 +1360,11 @@ function setupHandlers(server) {
 
     // Handle tools/call request
     server.setRequestHandler(CallToolRequestSchema, async (request) => {
-    const { name: toolName, arguments: args } = request.params;
+    // DXP-34 FIX: Use simple destructuring pattern like working log-analyzer-mcp
+    // Changed from: const { name: toolName, arguments: args } = request.params;
+    // The destructuring alias was causing toolName to be undefined in some MCP environments
+    const { name, arguments: args } = request.params;
+    const toolName = name; // Explicit assignment for clarity
 
     // DXP-34: Debug logging for tool name tracking
     if (process.env.DEBUG || process.env.TELEMETRY_DEBUG) {
