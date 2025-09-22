@@ -1,0 +1,78 @@
+{
+  "name": "@jaxon-digital/optimizely-dxp-mcp",
+  "version": "3.28.7",
+  "description": "Streamlined automation for Optimizely DXP - deploy, monitor, and manage environments with transparent, direct tools",
+  "main": "dist/index.js",
+  "bin": {
+    "jaxon-optimizely-dxp-mcp": "dist/index.js"
+  },
+  "scripts": {
+    "start": "node dist/index.js",
+    "test": "node tests/ci-test.js",
+    "test:full": "node tests/test-suite.js",
+    "test:logger": "node tests/test-logger.js",
+    "test:security": "node tests/test-security.js",
+    "test:projects": "node tests/test-project-resolution.js",
+    "test:powershell": "node tests/test-powershell.js",
+    "test:progress": "node test-upload-progress.js",
+    "test:regression": "node tests/regression/run-regression.js",
+    "test:regression:quick": "node tests/regression/run-regression.js --mode quick",
+    "test:regression:full": "node tests/regression/run-regression.js --mode full",
+    "test:regression:integration": "node tests/regression/run-regression.js --mode integration",
+    "test:regression:windows": "node tests/regression/run-regression.js --platform win32",
+    "test:regression:macos": "node tests/regression/run-regression.js --platform darwin",
+    "test:regression:linux": "node tests/regression/run-regression.js --platform linux",
+    "check-deps": "node scripts/install-dependencies.js",
+    "postinstall": "node scripts/install-dependencies.js || exit 0",
+    "preversion": "node scripts/update-readme-version.js",
+    "postversion": "git push && git push --tags",
+    "update-clients": "node scripts/update-mcp-clients.js",
+    "publish:patch": "npm version patch && npm publish --access public",
+    "publish:minor": "npm version minor && npm publish --access public",
+    "publish:major": "npm version major && npm publish --access public",
+    "publish:dry": "npm pack --dry-run",
+    "publish:safe": "./scripts/publish.sh",
+    "sync:public": "./scripts/sync-public-repo.sh"
+  },
+  "keywords": [
+    "jaxon",
+    "jaxon-digital",
+    "mcp",
+    "optimizely",
+    "dxp",
+    "deployment",
+    "database",
+    "export",
+    "powershell"
+  ],
+  "author": "Jaxon Digital",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.17.2",
+    "zod": "^3.24.0",
+    "zod-to-json-schema": "^3.24.1"
+  },
+  "engines": {
+    "node": ">=18.20.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JaxonDigital/optimizely-dxp-mcp.git"
+  },
+  "homepage": "https://github.com/JaxonDigital/optimizely-dxp-mcp#readme",
+  "bugs": {
+    "url": "https://github.com/JaxonDigital/optimizely-dxp-mcp/issues"
+  },
+  "files": [
+    "dist/**/*",
+    "lib/**/*",
+    "scripts/install-dependencies.js",
+    "scripts/update-mcp-clients.js",
+    "README.md",
+    "LICENSE",
+    "MULTI_PROJECT_CONFIG.md",
+    "TELEMETRY.md",
+    "WINDOWS_SETUP.md",
+    "CHANGELOG.md"
+  ]
+}
