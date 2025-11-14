@@ -1,0 +1,89 @@
+# NPM Publish Ignore File for Jaxon Optimizely DXP MCP
+# Files and directories to exclude from npm package
+
+# Development and testing
+test-*.js
+test-*.txt
+tests/
+*.test.js
+*.zip
+*.nupkg
+*.bacpac
+
+# Private documentation
+CLAUDE.md
+MCP_TEST_PLAN.md
+PRIVATE_*.md
+*_PRIVATE.md
+PROJECT_STATUS.md
+
+# Environment and config
+.env
+.env.*
+.npmrc
+*.local.json
+.claude/
+
+# Scripts (except the ones we need)
+scripts/*
+!scripts/install-dependencies.js
+!scripts/update-mcp-clients.js
+!scripts/update-readme-version.js
+
+# Git and CI/CD
+.git/
+.github/
+.gitignore
+.gitattributes
+.gitleaks.toml
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# Logs and temp
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+tmp/
+temp/
+*.tmp
+*.tgz
+
+# Cache
+.npm/
+.eslintcache
+
+# Client-specific files
+*christie*
+*vhb*
+*cambro*
+*client*
+*CLIENT*
+
+# Example configs (keep only generic ones)
+example-*.json
+!example-config.json
+
+# Source files (we ship built files only)
+src/
+
+# Build artifacts - removed from .npmignore since we need dist/ in npm package
+# dist/ <- IMPORTANT: dist/ is included in npm package (contains built output)
+build/
+
+# Security and credentials
+*credentials*
+*password*
+*secret*
+*apikey*
+*token*
+
+# Other
+.npmignore
+Thumbs.db
