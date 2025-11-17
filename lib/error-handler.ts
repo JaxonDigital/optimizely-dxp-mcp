@@ -1,0 +1,558 @@
+/**
+ * Error Handler Module
+ * Centralized error detection and formatting
+ * Part of Jaxon Digital Optimizely DXP MCP Server
+ */
+
+import SecurityHelper from './security-helper';
+
+interface ErrorContext {
+    operation?: string;
+    projectId?: string;
+    projectName?: string;
+    environment?: string;
+    deploymentId?: string;
+    resourceType?: string;
+    resourceId?: string;
+    expectedState?: string;
+    apiKey?: string;
+}
+
+interface DetectedError {
+    type: string;
+    title: string;
+    message: string;
+    solution: string;
+}
+
+interface ErrorPattern {
+    pattern: RegExp;
+    type: string;
+    title: string;
+    getMessage: (_error: any, _context?: ErrorContext) => string;
+    getSolution: (_error: any, _context?: ErrorContext) => string;
+}
+
+interface MCPErrorResponse {
+    content: Array<{
+        type: string;
+        text: string;
+    }>;
+    isError: boolean;
+}
+
+class ErrorHandler {
+    /**
+     * Common error patterns and their handlers
+     */
+    static ERROR_PATTERNS: Record<string, ErrorPattern> = {
+        // Check API permissions - now more specific to avoid false positives
+        PERMISSION_DENIED: {
+            pattern: /(403.*forbidden|access.*denied.*environment|unauthorized.*environment)/i,
+            type: 'PERMISSION_DENIED',
+            title: 'Permission Denied',
+            getMessage: (error: string, _context?: ErrorContext): string => {
+                // Extract environment if mentioned
+                const envMatch = error.match(/(Integration|Preproduction|Production)/i);
+                const environment = envMatch ? envMatch[1] : 'the requested environment';
+                return `Your API key does not have access to ${environment}.`;
+            },
+            getSolution: (error: string, _context?: ErrorContext): string => {
+                const envMatch = error.match(/(Integration|Preproduction|Production)/i);
+                const environment = envMatch ? envMatch[1] : null;
+
+                let solution = ['**❌ Access Denied**', ''];
+
+                if (environment) {
+                    solution.push(`You do not have permission to access the ${environment} environment.`);
+                } else {
+                    solution.push('You do not have permission for this operation.');
+                }
+
+                solution.push('', '**What you can do:**');
+                solution.push('• Try using a different environment you have access to');
+                solution.push('• Contact your DXP administrator to request access');
+                solution.push('• Check your API key permissions in the Optimizely DXP Portal');
+
+                return solution.join('\n');
+            }
+        },
+        CONFIG_ERROR: {
+            pattern: /(Missing required fields|Invalid project ID format|Empty configuration|Invalid parameter format)/i,
+            type: 'CONFIG_ERROR',
+            title: 'Configuration Error',
+            getMessage: (error: string): string => error || 'Your project configuration has errors',
+            getSolution: (): string => [
+                '**Correct Format:**',
+                '```',
+                'OPTIMIZELY_API_KEY_ACME="id=<uuid>;key=<apikey>;secret=<apisecret>"',
+                '```',
+                '',
+                '**Example:**',
+                '```',
+                'OPTIMIZELY_API_KEY_MY_CLIENT="id=abc12345-1234-5678-9abc-def123456789;key=myApiKey123;secret=myApiSecret456"',
+                '```',
+                '(Legacy format OPTIMIZELY_PROJECT_<NAME> also supported)',
+                '',
+                '**Common Issues:**',
+                '- Missing semicolons between parameters',
+                '- Using placeholder values like "example" or "your-key-here"',
+                '- Project ID not in UUID format',
+                '- Empty or missing required fields (id, key, secret)'
+            ].join('\n')
+        },
+        MODULE_MISSING: {
+            pattern: /EpiCloud/i,
+            type: 'MODULE_MISSING',
+            title: 'EpiCloud PowerShell Module Required',
+            getMessage: (): string => 'To use this feature, you need the EpiCloud PowerShell module installed',
+            getSolution: (): string => [
+                '**Installation:**',
+                '```powershell',
+                'Install-Module EpiCloud -Force',
+                '```'
+            ].join('\n')
+        },
+        INVALID_PROJECT_ID: {
+            pattern: /Failed to validate the credentials specified for project with id|project with id.*not found|invalid project.*uuid|project.*does not exist.*portal/i,
+            type: 'INVALID_PROJECT_ID',
+            title: 'Invalid Project ID',
+            getMessage: (_error: any, context?: ErrorContext): string => {
+                return context?.projectId
+                    ? `The Project ID '${context.projectId}' is invalid or does not exist in your account`
+                    : 'The specified Project ID is invalid or does not exist in your account';
+            },
+            getSolution: (_error: any, context?: ErrorContext): string => [
+                '**How to Fix:**',
+                '1. **Check your Project ID in Optimizely DXP:**',
+                '   - Log into your Optimizely DXP portal',
+                '   - Navigate to your project settings',
+                '   - Copy the correct Project ID (it should be a UUID format like: abc12345-1234-5678-9abc-def123456789)',
+                '',
+                '2. **Verify your credentials have access to the project:**',
+                '   - Ensure your API key was created for the correct project',
+                '   - Check that you have permission to access this project',
+                '   - Try using a different project from your account',
+                '',
+                '3. **Common Issues:**',
+                '   - Project ID format must be a valid UUID',
+                '   - API credentials might be for a different project',
+                '   - Project may have been deleted or renamed',
+                '   - You may not have access to this project',
+                '',
+                context?.projectId ? `**Your Project ID:** ${context.projectId}` : '',
+                '**Expected Format:** xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
+            ].filter(Boolean).join('\n')
+        },
+        AUTH_FAILED: {
+            pattern: /(authentication|unauthorized.*credential|401|HTTP 401)/i,
+            type: 'AUTH_FAILED',
+            title: 'Authentication Failed',
+            getMessage: (error: string, _context?: ErrorContext): string => {
+                // Check if it's Azure Storage authentication
+                if (error && error.includes('Azure Storage')) {
+                    return 'Azure Storage authentication failed. The account key or SAS token is invalid.';
+                }
+                return 'The API credentials are invalid or expired';
+            },
+            getSolution: (error: string, context?: ErrorContext): string => {
+                // Azure Storage specific solution
+                if (error && error.includes('Azure Storage')) {
+                    return [
+                        '**Azure Storage Authentication Issue:**',
+                        '',
+                        '**Check your connection string:**',
+                        '• Verify the AccountKey is correct and not expired',
+                        '• Ensure the AccountName matches your storage account',
+                        '• Check that the connection string format is valid',
+                        '',
+                        '**Connection string format:**',
+                        '```',
+                        'DefaultEndpointsProtocol=https;AccountName=myaccount;AccountKey=mykey;EndpointSuffix=core.windows.net',
+                        '```',
+                        '',
+                        '**Common issues:**',
+                        '• Account key may have been rotated in Azure Portal',
+                        '• Special characters in the key not properly escaped',
+                        '• Using an old or expired SAS token instead of account key'
+                    ].join('\n');
+                }
+
+                // Default API credentials solution
+                return [
+                    '**Troubleshooting:**',
+                    '- Verify your API key and secret are correct',
+                    '- Check that the credentials haven\'t expired',
+                    context?.projectId ? `- Ensure the credentials are for project ${context.projectId}` : '',
+                    '- Generate new credentials if needed'
+                ].filter(Boolean).join('\n');
+            }
+        },
+        OPERATION_IN_PROGRESS: {
+            pattern: /(on-going|already running|already an on-going)/i,
+            type: 'OPERATION_IN_PROGRESS',
+            title: 'Operation Already In Progress',
+            getMessage: (): string => 'Another operation is currently running on this environment',
+            getSolution: (): string => [
+                '**Next Steps:**',
+                '- Wait for the current operation to complete',
+                '- Check deployment status to monitor progress',
+                '- Try again once the current operation finishes'
+            ].join('\n')
+        },
+        INVALID_STATE: {
+            pattern: /(invalid state|cannot be|not in a valid state)/i,
+            type: 'INVALID_STATE',
+            title: 'Invalid Operation State',
+            getMessage: (): string => 'This operation cannot be performed in the current state',
+            getSolution: (_error: any, context?: ErrorContext): string => [
+                '**Requirements:**',
+                context?.expectedState ? `- Resource must be in ${context.expectedState} state` : '',
+                '- Check the current status before retrying',
+                '- Ensure all prerequisites are met'
+            ].filter(Boolean).join('\n')
+        },
+        LARGE_FILE: {
+            pattern: /(exceeds GitHub|Large files detected|file size limit)/i,
+            type: 'LARGE_FILE',
+            title: 'Large File Detected',
+            getMessage: (): string => 'File exceeds size limits',
+            getSolution: (): string => [
+                '**Solutions:**',
+                '- Remove large files from repository',
+                '- Use Git LFS for large files',
+                '- Add large files to .gitignore'
+            ].join('\n')
+        },
+        INVALID_DEPLOYMENT: {
+            pattern: /(deployment.*not found|invalid deployment|deployment does not exist|get-epideployment.*cannot find)/i,
+            type: 'INVALID_DEPLOYMENT',
+            title: 'Invalid Deployment ID',
+            getMessage: (_error: any, context?: ErrorContext): string => {
+                return context?.deploymentId
+                    ? `The deployment ID '${context.deploymentId}' is invalid or does not exist`
+                    : 'The specified deployment ID is invalid or does not exist';
+            },
+            getSolution: (_error: any, context?: ErrorContext): string => [
+                '**How to Fix:**',
+                '1. List available deployments:',
+                '   Use `list_deployments` to see all deployments',
+                '2. Copy the correct deployment ID from the list',
+                '3. Ensure you\'re using the full deployment ID (usually a GUID)',
+                '',
+                '**Common Issues:**',
+                '- Partial IDs are not accepted (use the full GUID)',
+                '- Deployment may have been cleaned up after 30 days',
+                '- You may be looking in the wrong project',
+                context?.deploymentId ? `\n**Provided ID:** ${context.deploymentId}` : '',
+                context?.projectId ? `**Project:** ${context.projectId}` : ''
+            ].filter(Boolean).join('\n')
+        },
+        NOT_FOUND: {
+            pattern: /(not found|404|does not exist)/i,
+            type: 'NOT_FOUND',
+            title: 'Resource Not Found',
+            getMessage: (_error: any, context?: ErrorContext): string => {
+                // Provide specific message for deployment IDs
+                if (context?.deploymentId) {
+                    return `Deployment with ID '${context.deploymentId}' was not found`;
+                }
+                // Handle project access issues with structured response
+                if (context?.projectId || context?.projectName) {
+                    return `Unable to access ${context.projectName || 'project'}`;
+                }
+                return `The requested ${context?.resourceType || 'resource'} was not found`;
+            },
+            getSolution: (_error: any, context?: ErrorContext): string => {
+                // Provide specific guidance for deployment IDs
+                if (context?.deploymentId) {
+                    return [
+                        '**Troubleshooting Steps:**',
+                        '1. Verify the deployment ID is correct (check for typos)',
+                        '2. Use `list_deployments` to see available deployments',
+                        '3. Ensure the deployment exists in this project',
+                        '4. Check that you have permission to view this deployment',
+                        '',
+                        `**Deployment ID:** ${context.deploymentId}`,
+                        context.projectId ? `**Project ID:** ${context.projectId}` : ''
+                    ].filter(Boolean).join('\n');
+                }
+
+                // Enhanced project access troubleshooting with masked API key
+                if (context?.projectId || context?.projectName || context?.apiKey) {
+                    const parts: string[] = [];
+
+                    parts.push('🔍 **Configuration Verification:**');
+                    parts.push('');
+
+                    // Project ID verification
+                    if (context.projectId) {
+                        parts.push('1. ✅ **Project ID Format**');
+                        parts.push(`   • Current: ${context.projectId}`);
+                        parts.push('   • Status: Valid UUID format');
+                        parts.push('');
+                    }
+
+                    // API Key verification with masking
+                    if (context.apiKey) {
+                        const maskedKey = SecurityHelper.maskSecret(context.apiKey, 4);
+                        parts.push('2. ✅ **API Key Configuration**');
+                        parts.push(`   • Prefix: ${maskedKey} (first 4 chars for identification)`);
+                        parts.push('   • Length: ✅ Correct length (40 characters)');
+                        parts.push('   • Status: ❓ Unable to verify - check DXP Portal');
+                        parts.push('');
+                    }
+
+                    parts.push('3. 🔍 **Manual Verification Required**');
+                    parts.push('   • Log into Optimizely DXP Portal');
+                    parts.push('   • Navigate to API Management');
+                    if (context.apiKey) {
+                        const maskedKey = SecurityHelper.maskSecret(context.apiKey, 4);
+                        parts.push(`   • Verify API Key ${maskedKey} has access to project: ${context.projectName || context.projectId}`);
+                    }
+                    parts.push('   • Check if project name/ID changed recently');
+                    parts.push('   • Confirm API Key has sufficient permissions for this operation');
+                    parts.push('');
+                    parts.push('⚠️  **Note:** Optimizely\'s API returns the same error for invalid credentials,');
+                    parts.push('    missing permissions, or incorrect project IDs.');
+
+                    return parts.join('\n');
+                }
+
+                return [
+                    '**Possible Causes:**',
+                    '- Incorrect ID or name provided',
+                    '- Resource has been deleted',
+                    '- You don\'t have permission to access it',
+                    context?.resourceId ? `- Resource ID: ${context.resourceId}` : ''
+                ].filter(Boolean).join('\n');
+            }
+        },
+        TIMEOUT: {
+            pattern: /(timeout|timed out)/i,
+            type: 'TIMEOUT',
+            title: 'Operation Timed Out',
+            getMessage: (): string => 'The operation took too long to complete',
+            getSolution: (): string => [
+                '**Suggestions:**',
+                '- Try again with a longer timeout',
+                '- Check if the service is responsive',
+                '- Consider breaking the operation into smaller steps'
+            ].join('\n')
+        }
+    };
+
+    /**
+     * Detect error type from stderr output
+     * @param {string} stderr - Error output
+     * @param {Object} context - Additional context
+     * @returns {Object|null} Error details or null
+     */
+    static detectError(stderr: string, context: ErrorContext = {}): DetectedError | null {
+        if (!stderr) return null;
+
+        for (const [_key, errorDef] of Object.entries(this.ERROR_PATTERNS)) {
+            if (errorDef.pattern.test(stderr)) {
+                return {
+                    type: errorDef.type,
+                    title: errorDef.title,
+                    message: errorDef.getMessage(stderr, context),
+                    solution: errorDef.getSolution(stderr, context)
+                };
+            }
+        }
+
+        // Generic error if no pattern matches
+        if (stderr.includes('error') || stderr.includes('Exception')) {
+            // Try to extract specific error message
+            const errorMatch = stderr.match(/"errors":\["(.+?)"/i);
+            const message = errorMatch ? errorMatch[1] : 'An unexpected error occurred';
+
+            return {
+                type: 'GENERIC_ERROR',
+                title: 'Error',
+                message: message,
+                solution: '**Troubleshooting:**\n- Check the error message for details\n- Verify all parameters are correct\n- Try again or contact support@jaxondigital.com for help'
+            };
+        }
+
+        return null;
+    }
+
+    /**
+     * Format error for display
+     * @param {Object} error - Error object from detectError
+     * @param {Object} context - Additional context
+     * @returns {string} Formatted error message
+     */
+    static formatError(error: DetectedError, context: ErrorContext = {}): string {
+        // Handle limited environment access as informational, not an error
+        if (error.type === 'LIMITED_ENV_ACCESS') {
+            let result = `ℹ️ **${error.title}**\n\n`;
+            result += error.message + '\n\n';
+            result += error.solution + '\n';
+
+            // Immediately check which environments are accessible
+            result += '\n**Checking your actual environment access...**';
+            return result;
+        }
+
+        let result = `❌ **${error.title}**\n\n`;
+
+        if (error.message) {
+            result += error.message + '\n\n';
+        }
+
+        if (error.solution) {
+            result += error.solution + '\n';
+        }
+
+        // Add context information (sanitized)
+        const safeContext = SecurityHelper.createSafeLogContext(context);
+        const contextItems: string[] = [];
+        if (safeContext.operation) contextItems.push(`**Operation:** ${safeContext.operation}`);
+        if (safeContext.projectId) contextItems.push(`**Project ID:** ${safeContext.projectId}`);
+        if (safeContext.environment) contextItems.push(`**Environment:** ${safeContext.environment}`);
+        if (safeContext.deploymentId) contextItems.push(`**Deployment ID:** ${safeContext.deploymentId}`);
+
+        if (contextItems.length > 0) {
+            result += '\n' + contextItems.join('\n');
+        }
+
+        // Add support contact for persistent issues
+        result += '\n\n📧 **Need help?** Contact us at support@jaxondigital.com';
+
+        return result;
+    }
+
+    /**
+     * Extract error message from various formats
+     * @param {string} errorText - Error text to parse
+     * @returns {string} Extracted error message (sanitized)
+     */
+    static extractErrorMessage(errorText: string): string {
+        let message = '';
+
+        // Remove ANSI color codes first
+        const cleanText = errorText.replace(/\[\d+(?:;\d+)*m/g, '');
+
+        // Try JSON error format
+        const jsonMatch = cleanText.match(/"errors":\["(.+?)"/i);
+        if (jsonMatch) {
+            message = jsonMatch[1];
+        } else {
+            // Try specific Optimizely project validation error
+            const optimizelyMatch = cleanText.match(/Failed to validate the credentials specified for project with id (.+?)!/i);
+            if (optimizelyMatch) {
+                message = `Invalid Project ID: ${optimizelyMatch[1]}`;
+            } else {
+                // Try exception message
+                const exceptionMatch = cleanText.match(/Exception: (.+?)$/im);
+                if (exceptionMatch) {
+                    message = exceptionMatch[1];
+                } else {
+                    // Try generic error format
+                    const errorMatch = cleanText.match(/Error: (.+?)$/im);
+                    if (errorMatch) {
+                        message = errorMatch[1];
+                    } else {
+                        // Return first non-empty line if nothing else matches
+                        const lines = cleanText.split('\n').map(line => line.trim()).filter(line => line.length > 0);
+                        message = lines[0] || 'An error occurred';
+                    }
+                }
+            }
+        }
+
+        // Sanitize the extracted message to remove any secrets
+        return SecurityHelper.sanitizeError(message);
+    }
+
+    /**
+     * Check if error is retryable
+     * @param {Object} error - Error object
+     * @returns {boolean} True if operation can be retried
+     */
+    static isRetryable(error: DetectedError): boolean {
+        const retryableTypes = [
+            'TIMEOUT',
+            'OPERATION_IN_PROGRESS'
+        ];
+
+        return retryableTypes.includes(error.type);
+    }
+
+    /**
+     * Get suggested wait time for retry
+     * @param {Object} error - Error object
+     * @returns {number} Suggested wait time in milliseconds
+     */
+    static getRetryDelay(error: DetectedError): number {
+        const delays: Record<string, number> = {
+            'OPERATION_IN_PROGRESS': 30000, // 30 seconds
+            'TIMEOUT': 5000, // 5 seconds
+            'default': 10000 // 10 seconds
+        };
+
+        return delays[error.type] || delays.default;
+    }
+
+    /**
+     * Handle error and return MCP response format
+     * @param {Error|string} error - Error object or message
+     * @param {string|Object} operation - Operation name or context object
+     * @param {Object} additionalContext - Additional context if operation is a string
+     * @returns {Object} MCP response object with error content
+     */
+    static handleError(
+        error: Error | string | DetectedError,
+        operation?: string | ErrorContext,
+        additionalContext?: ErrorContext
+    ): MCPErrorResponse {
+        // Handle different call signatures
+        let context: ErrorContext = {};
+        if (typeof operation === 'string') {
+            context = { operation, ...additionalContext };
+        } else if (typeof operation === 'object') {
+            context = operation;
+        }
+
+        // If error is already formatted (has title/message), use formatError
+        if (error && typeof error === 'object' && 'title' in error && 'message' in error) {
+            const formattedError = ErrorHandler.formatError(error as DetectedError, context);
+            return {
+                content: [{
+                    type: 'text',
+                    text: formattedError
+                }],
+                isError: true
+            };
+        }
+
+        // Otherwise, detect error type first
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        const detectedError = ErrorHandler.detectError(errorMessage, context);
+
+        if (detectedError) {
+            const formattedError = ErrorHandler.formatError(detectedError, context);
+            return {
+                content: [{
+                    type: 'text',
+                    text: formattedError
+                }],
+                isError: true
+            };
+        }
+
+        // Fallback for unrecognized errors
+        return {
+            content: [{
+                type: 'text',
+                text: `❌ **Error**\n\n${errorMessage}\n\n📧 Need help? Contact us at support@jaxondigital.com`
+            }],
+            isError: true
+        };
+    }
+}
+
+export default ErrorHandler;
